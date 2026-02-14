@@ -1,0 +1,36 @@
+import type { Metadata } from "next";
+import { Inter, Orbitron } from "next/font/google";
+import "./globals.css";
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700", "800"],
+});
+
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800", "900"],
+});
+
+export const metadata: Metadata = {
+  title: "Pre-Hackathon Registration | JKLU × WScube Tech",
+  description:
+    "Register your team for the JKLU Pre-Hackathon — powered by WScube Tech. Prepare for HackJKLU and experience the thrill of a hackathon!",
+  keywords: ["JKLU", "HackJKLU", "Pre-Hackathon", "WScube Tech", "Registration", "Hackathon"],
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body className={`${inter.variable} ${orbitron.variable} antialiased`}>
+        {children}
+      </body>
+    </html>
+  );
+}
