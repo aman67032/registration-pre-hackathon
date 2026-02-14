@@ -15,7 +15,8 @@
   --accent-amber: #f59e0b;
   --accent-coral: #f97316;
   --accent-rose: #e11d48;
-  --accent-teal: #0d9488;
+  --accent-teal: #10B981;
+  /* Premium Emerald */
   --card-bg: rgba(255, 255, 255, 0.75);
   --card-border: rgba(232, 98, 26, 0.15);
   --card-shadow: 0 8px 40px rgba(232, 98, 26, 0.08), 0 2px 12px rgba(0, 0, 0, 0.04);

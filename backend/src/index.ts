@@ -7,9 +7,10 @@ const app = express();
 const PORT = 5000;
 
 // Middleware
+// Middleware
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
-    methods: ['GET', 'POST'],
+    origin: '*', // Allow all origins (for hackathon/dev), restricts to specific domains in prod ideally
+    methods: ['GET', 'POST', 'OPTIONS'],
     credentials: true,
 }));
 app.use(express.json());
@@ -26,8 +27,8 @@ app.get('/api/health', (_req, res) => {
     res.json({ status: 'ok', message: 'Pre-Hackathon Backend is running 🚀' });
 });
 
-// Connect DB
-connectDB();
+// Connect DB - Removed global call for serverless, handled in routes
+// connectDB();
 
 // Start server only if not running in Vercel
 if (process.env.NODE_ENV !== 'production') {
