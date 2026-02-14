@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const MONGO_URI = 'mongodb://localhost:27017/Data_Collection_Pre-Hackthon';
+const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://solomaze67032_db_user:hackjklu2025cta@registration.hxjfaww.mongodb.net/prehackathon?retryWrites=true&w=majority&appName=REGISTRATION';
 
 export const connectDB = async (): Promise<void> => {
     try {
