@@ -254,16 +254,7 @@ export default function Home() {
       <div className="grain-overlay" />
       <Scene3D />
 
-      {/* ═══════════════ DARK HEADER ═══════════════ */}
-      <header style={{
-        display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        padding: '10px 32px', background: 'rgba(15, 10, 5, 0.92)', backdropFilter: 'blur(16px)',
-        borderBottom: '1px solid rgba(232, 98, 26, 0.15)', position: 'sticky', top: 0, zIndex: 50,
-      }}>
-        <Image src="/JKLU White.png" alt="JKLU" width={100} height={40} className="logo-img" style={{ objectFit: 'contain', height: '34px', width: 'auto' }} />
-        <Image src="/hackjklu.png" alt="HackJKLU" width={140} height={48} className="logo-img" style={{ objectFit: 'contain', height: '42px', width: 'auto' }} />
-        <Image src="/wscube.jpg" alt="WScube Tech" width={120} height={40} className="logo-img" style={{ objectFit: 'contain', height: '34px', width: 'auto' }} />
-      </header>
+
 
       {/* ═══════════════ HERO SECTION — 100vh Light ═══════════════ */}
       <section style={{
