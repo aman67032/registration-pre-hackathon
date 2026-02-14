@@ -1,6 +1,9 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
-const MONGO_URI = process.env.MONGODB_URI || 'mongodb+srv://solomaze67032_db_user:hackjklu2025cta@registration.hxjfaww.mongodb.net/prehackathon?retryWrites=true&w=majority&appName=REGISTRATION';
+dotenv.config();
+
+const MONGO_URI = process.env.MONGODB_URI!;
 
 export const connectDB = async (): Promise<void> => {
     try {
