@@ -448,8 +448,13 @@ export default function Home() {
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
             <h2 style={{
               fontFamily: 'OriginTech, sans-serif', fontSize: 'clamp(32px, 6vw, 56px)',
-              fontWeight: 400, margin: '0 0 12px 0', color: '#CF9D7B', letterSpacing: '2px',
-              textShadow: '0 0 20px rgba(207,157,123,0.3)', lineHeight: 1.1
+              fontWeight: 400, margin: '0 0 12px 0', letterSpacing: '2px',
+              lineHeight: 1.1,
+              background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 0 20px rgba(207,157,123,0.3)',
             }}>
               <span className="glow-text">Team Registration</span>
             </h2>
@@ -725,6 +730,7 @@ export default function Home() {
            border-left: 3px solid #8D6E63 !important; /* Warm Cocoa Accent */
            color: #E6CCB2 !important; /* Creamy Latte Text */
            font-family: 'Courier New', monospace; 
+           font-size: 16px !important; /* Increased for better readability */
            border-radius: 4px !important;
            transition: all 0.3s ease;
         }
@@ -735,10 +741,11 @@ export default function Home() {
            background: #2C201A !important; /* Slightly lighter espresso on focus */
         }
         .form-input::placeholder {
-           color: #8D6E63 !important; /* Cocoa Placeholder */
-           opacity: 0.7;
+           color: #B08968 !important; /* Lighter cocoa for better visibility */
+           opacity: 0.8;
            font-family: sans-serif;
            font-style: italic;
+           font-size: 15px !important;
         }
 
         /* Custom scrollbar */
