@@ -5,6 +5,7 @@ import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
 const Scene3D = dynamic(() => import('./components/Scene3D'), { ssr: false });
+import Loader from './components/Loader';
 
 interface MemberData {
   name: string;
@@ -94,11 +95,31 @@ function StatCard({ icon, value, label }: { icon: React.ReactNode; value: string
 }
 
 export default function Home() {
+  const [loading, setLoading] = useState(true); // Default to true for loader
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
+
+  // Loader Effect - Wait for page load
+  React.useEffect(() => {
+    // Minimum wait time of 2s to prevent flickering
+    const minWait = new Promise(resolve => setTimeout(resolve, 2000));
+
+    // Wait for window load event (images, scripts, etc.)
+    const windowLoad = new Promise(resolve => {
+      if (document.readyState === 'complete') {
+        resolve(true);
+      } else {
+        window.addEventListener('load', () => resolve(true));
+      }
+    });
+
+    Promise.all([minWait, windowLoad]).then(() => {
+      setLoading(false);
+    });
+  }, []);
   const [openSections, setOpenSections] = useState<Record<string, boolean>>({
     leader: true,
     member0: true,
@@ -241,11 +262,14 @@ export default function Home() {
           <p style={{ color: '#9c8578', fontSize: '15px', margin: '0 0 12px 0', lineHeight: 1.6 }}>
             🚀 Get ready to hack! We&apos;ll reach out to you via email with further details.
           </p>
-          <p style={{ color: '#b08968', fontSize: '13px', margin: 0, fontStyle: 'italic' }}>— Team HackJKLU</p>
+          <p style={{ color: '#b08968', fontSize: '13px', margin: 0, fontStyle: 'italic' }}>— Council of Technical Affairs</p>
         </div>
       </div>
     );
   }
+
+  // ─── LOADER ───
+  if (loading) return <Loader />;
 
   // ─── MAIN PAGE ───
   return (
@@ -573,8 +597,29 @@ export default function Home() {
             </div>
           </div>
 
+          {/* Contact for Queries */}
+          <div style={{ textAlign: 'center', marginTop: '60px', marginBottom: '40px', padding: '0 20px' }}>
+            <p style={{
+              color: '#a0a0a0', fontSize: '14px', marginBottom: '8px',
+              fontFamily: 'var(--font-orbitron)', letterSpacing: '0.5px'
+            }}>
+              For any queries, please contact us at:
+            </p>
+            <a href="mailto:counciloftechnicalaffairs@jklu.edu.in"
+              className="glow-link"
+              style={{
+                color: '#CF9D7B', fontWeight: 600, textDecoration: 'none',
+                fontSize: 'clamp(14px, 4vw, 16px)', letterSpacing: '0.5px',
+                borderBottom: '1px dashed rgba(207,157,123,0.4)', paddingBottom: '2px',
+                transition: 'all 0.3s ease'
+              }}
+            >
+              counciloftechnicalaffairs@jklu.edu.in
+            </a>
+          </div>
+
           {/* Footer */}
-          <div style={{ textAlign: 'center', color: '#724B39', fontSize: '13px', marginTop: '60px', lineHeight: 1.6, fontWeight: 500 }}>
+          <div style={{ textAlign: 'center', color: '#724B39', fontSize: '13px', marginTop: '20px', lineHeight: 1.6, fontWeight: 500 }}>
             <p style={{ margin: '0 0 12px 0', fontFamily: 'var(--font-orbitron)', letterSpacing: '1px' }}>
               ORGANIZED BY COUNCIL OF TECHNICAL AFFAIRS
             </p>
@@ -701,6 +746,12 @@ export default function Home() {
         ::-webkit-scrollbar-track { background: #121519; }
         ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #CF9D7B; }
+        
+        .glow-link:hover {
+          color: #E8C39E !important;
+          text-shadow: 0 0 10px rgba(207,157,123,0.6);
+          border-bottom-color: #E8C39E !important;
+        }
       `}</style>
     </div>
   );
