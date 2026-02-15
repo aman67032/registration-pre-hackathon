@@ -12,6 +12,7 @@ interface MemberData {
   email: string;
   whatsApp: string;
   rollNumber: string;
+  residency: 'Hosteller' | 'Day Scholar';
 }
 
 interface FormData {
@@ -20,10 +21,11 @@ interface FormData {
   leaderEmail: string;
   leaderWhatsApp: string;
   leaderRollNumber: string;
+  leaderResidency: 'Hosteller' | 'Day Scholar';
   members: MemberData[];
 }
 
-const initialMember: MemberData = { name: '', email: '', whatsApp: '', rollNumber: '' };
+const initialMember: MemberData = { name: '', email: '', whatsApp: '', rollNumber: '', residency: 'Hosteller' };
 
 const initialForm: FormData = {
   teamName: '',
@@ -31,6 +33,7 @@ const initialForm: FormData = {
   leaderEmail: '',
   leaderWhatsApp: '',
   leaderRollNumber: '',
+  leaderResidency: 'Hosteller',
   members: [{ ...initialMember }, { ...initialMember }, { ...initialMember }],
 };
 
@@ -237,6 +240,34 @@ export default function Home() {
         value={value}
         onChange={(e) => onChange(e.target.value)}
       />
+      {errors[errorKey] && (
+        <p style={{ color: '#dc2626', fontSize: '11px', margin: '4px 0 0 0', fontWeight: 500 }}>⚠ {errors[errorKey]}</p>
+      )}
+    </div>
+  );
+
+  const renderSelect = (
+    label: string,
+    value: string,
+    onChange: (v: string) => void,
+    errorKey: string,
+    options: string[],
+    icon = ''
+  ) => (
+    <div style={{ marginBottom: '14px' }}>
+      <label style={{ display: 'block', fontSize: '11px', fontWeight: 700, color: '#6b4c3b', marginBottom: '5px', textTransform: 'uppercase', letterSpacing: '0.8px' }}>
+        {icon && <span style={{ marginRight: '4px' }}>{icon}</span>}{label} <span style={{ color: '#e8621a' }}>*</span>
+      </label>
+      <select
+        className={`form-input ${errors[errorKey] ? 'error' : ''}`}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        style={{ cursor: 'pointer' }}
+      >
+        {options.map((option) => (
+          <option key={option} value={option}>{option}</option>
+        ))}
+      </select>
       {errors[errorKey] && (
         <p style={{ color: '#dc2626', fontSize: '11px', margin: '4px 0 0 0', fontWeight: 500 }}>⚠ {errors[errorKey]}</p>
       )}
@@ -930,6 +961,7 @@ export default function Home() {
                     {renderInput('JKLU Email', form.leaderEmail, (v) => updateLeaderField('leaderEmail', v), 'leaderEmail', 'name@jklu.edu.in', 'email', '📧')}
                     {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
                     {renderInput('Roll Number', form.leaderRollNumber, (v) => updateLeaderField('leaderRollNumber', v), 'leaderRollNumber', 'e.g. 202*btech***', 'text', '🎓')}
+                    {renderSelect('Residence Type', form.leaderResidency, (v) => updateLeaderField('leaderResidency', v as any), 'leaderResidency', ['Hosteller', 'Day Scholar'], '🏠')}
                   </div>
                 </div>
               )}
@@ -959,6 +991,7 @@ export default function Home() {
                       {renderInput('JKLU Email', form.members[i].email, (v) => updateMemberField(i, 'email', v), `member${i}.email`, 'name@jklu.edu.in', 'email', '📧')}
                       {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
                       {renderInput('Roll Number', form.members[i].rollNumber, (v) => updateMemberField(i, 'rollNumber', v), `member${i}.rollNumber`, 'e.g. 202*btech***', 'text', '🎓')}
+                      {renderSelect('Residence Type', form.members[i].residency, (v) => updateMemberField(i, 'residency', v as any), `member${i}.residency`, ['Hosteller', 'Day Scholar'], '🏠')}
                     </div>
                   </div>
                 )}
