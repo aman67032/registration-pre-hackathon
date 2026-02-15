@@ -440,6 +440,410 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══════════════ RULES AND REGULATIONS SECTION ═══════════════ */}
+      <section style={{
+        position: 'relative', zIndex: 3,
+        padding: 'clamp(40px, 8vw, 80px) 20px',
+        maxWidth: '900px', margin: '0 auto',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+          <h2 style={{
+            fontFamily: 'OriginTech, sans-serif',
+            fontSize: 'clamp(32px, 6vw, 48px)',
+            fontWeight: 400,
+            margin: '0 0 12px 0',
+            letterSpacing: '2px',
+            lineHeight: 1.1,
+            background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textShadow: '0 0 20px rgba(207,157,123,0.3)',
+          }}>
+            Rules & Regulations
+          </h2>
+          <p style={{ color: '#a0a0a0', fontSize: '14px', margin: 0 }}>
+            Please read carefully before registering
+          </p>
+        </div>
+
+        <div style={{
+          background: 'rgba(30, 22, 17, 0.85)',
+          backdropFilter: 'blur(20px)',
+          border: '1px solid rgba(207,157,123,0.2)',
+          borderRadius: '24px',
+          padding: 'clamp(24px, 4vw, 40px)',
+          boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
+          position: 'relative',
+          overflow: 'hidden',
+        }}>
+          {/* Decorative top gradient bar */}
+          <div style={{
+            position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
+            background: 'linear-gradient(90deg, #724B39, #CF9D7B, #E8C39E, #CF9D7B)',
+          }} />
+
+          {/* Rules List */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginTop: '8px' }}>
+
+            {/* Rule 1: Team Size */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                <circle cx="9" cy="7" r="4"></circle>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Team Composition
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  Teams must consist of exactly 4 members (1 leader + 3 members). All team members must be registered JKLU students with valid college IDs.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 2: Code of Conduct */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                <path d="M9 12l2 2 4-4"></path>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Code of Conduct
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  All participants must maintain professional behavior. Any form of harassment, discrimination, or misconduct will lead to immediate disqualification.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 3: No Accommodation */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                <line x1="3" y1="9" x2="21" y2="9" stroke="#CF9D7B" strokeWidth="2"></line>
+                <line x1="3" y1="9" x2="21" y2="21" stroke="#e11d48" strokeWidth="2.5"></line>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  No Accommodation Provided
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  Accommodation will not be provided during the Pre-Hackathon. Participants are expected to make their own arrangements.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 4: Restricted Area Movement */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                <line x1="12" y1="9" x2="12" y2="13"></line>
+                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Restricted Area Movement Only
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  All participants must remain within designated areas only. Movement outside restricted zones is strictly prohibited for safety and security reasons.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 5: Day Scholar Mess Payment */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <path d="M18 8h1a4 4 0 0 1 0 8h-1"></path>
+                <path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path>
+                <line x1="6" y1="1" x2="6" y2="4"></line>
+                <line x1="10" y1="1" x2="10" y2="4"></line>
+                <line x1="14" y1="1" x2="14" y2="4"></line>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Day Scholars - Mess Payment Required
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  Day scholars who wish to avail mess facilities during the Pre-Hackathon will be required to pay for the meals separately.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 6: Punctuality */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Punctuality & Attendance
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  All team members must be present at the venue at the scheduled time. Late arrivals may result in penalties or disqualification.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 7: Original Work */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Original Work Only
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  All submissions must be original work created during the hackathon. Plagiarism or use of pre-existing projects will lead to immediate disqualification.
+                </p>
+              </div>
+            </div>
+
+            {/* Rule 8: ID Cards Required */}
+            <div style={{
+              background: 'rgba(207,157,123,0.05)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: '20px 24px',
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '16px',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
+                <rect x="3" y="4" width="18" height="16" rx="2" ry="2"></rect>
+                <circle cx="9" cy="10" r="2"></circle>
+                <path d="M15 9h3"></path>
+                <path d="M15 13h3"></path>
+                <path d="M6 16c0-1.5 1.34-3 3-3s3 1.5 3 3"></path>
+              </svg>
+              <div style={{ flex: 1 }}>
+                <h3 style={{
+                  fontFamily: 'var(--font-orbitron)',
+                  fontSize: '16px',
+                  fontWeight: 700,
+                  color: '#CF9D7B',
+                  margin: '0 0 8px 0',
+                  letterSpacing: '0.5px',
+                }}>
+                  Valid ID Cards Mandatory
+                </h3>
+                <p style={{
+                  color: '#a0a0a0',
+                  fontSize: '14px',
+                  margin: 0,
+                  lineHeight: 1.6,
+                }}>
+                  All participants must carry their valid JKLU ID cards at all times during the event. Entry will not be permitted without proper identification.
+                </p>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Important Notice */}
+          <div style={{
+            marginTop: '28px',
+            padding: '16px 20px',
+            background: 'rgba(232,98,26,0.1)',
+            border: '1px solid rgba(232,98,26,0.3)',
+            borderRadius: '12px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+          }}>
+            <div style={{ fontSize: '20px' }}>📢</div>
+            <p style={{
+              color: '#E8C39E',
+              fontSize: '13px',
+              margin: 0,
+              fontWeight: 600,
+              lineHeight: 1.5,
+            }}>
+              <strong>Important:</strong> Violation of any of these rules may result in disqualification from the event. By registering, you agree to adhere to all rules and regulations.
+            </p>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════════ FORM SECTION ═══════════════ */}
       <div id="register" style={{ position: 'relative', zIndex: 3, scrollMarginTop: '60px' }}>
         <form onSubmit={handleSubmit} style={{ maxWidth: '700px', margin: '0 auto', padding: 'clamp(28px, 5vw, 48px) 16px 72px' }}>
