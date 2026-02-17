@@ -423,7 +423,7 @@ export default function Home() {
             }}>
               <div style={{ fontSize: '42px', marginBottom: '12px', filter: 'drop-shadow(0 0 15px rgba(207,157,123,0.4))' }}>🎓</div>
               <h3 style={{ fontFamily: 'var(--font-orbitron)', fontSize: '18px', fontWeight: 700, color: '#CF9D7B', marginBottom: '8px' }}>
-                5 Internships
+                5-10 Internships
               </h3>
               <p style={{ fontSize: '13px', color: '#ccc', lineHeight: 1.5 }}>
                 Top performers get exclusive internship opportunities.
