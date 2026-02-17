@@ -10,6 +10,8 @@ interface Member {
     rollNumber: string;
     residency: 'Hosteller' | 'Day Scholar';
     messFood?: boolean;
+    course: 'BTech' | 'BBA' | 'BDes';
+    batch: string;
 }
 
 interface Team {
@@ -21,6 +23,8 @@ interface Team {
     leaderRollNumber: string;
     leaderResidency: 'Hosteller' | 'Day Scholar';
     leaderMessFood?: boolean;
+    leaderCourse: 'BTech' | 'BBA' | 'BDes';
+    leaderBatch: string;
     members: Member[];
     createdAt: string;
 }
@@ -692,6 +696,14 @@ export default function AdminDashboard() {
                                                         <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{team.leaderRollNumber}</span>
                                                     </div>
                                                     <div>
+                                                        <span style={{ color: '#9c8578', fontWeight: 600 }}>Course:</span>
+                                                        <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{team.leaderCourse}</span>
+                                                    </div>
+                                                    <div>
+                                                        <span style={{ color: '#9c8578', fontWeight: 600 }}>Batch:</span>
+                                                        <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{team.leaderBatch}</span>
+                                                    </div>
+                                                    <div>
                                                         <span style={{ color: '#9c8578', fontWeight: 600 }}>Residency:</span>
                                                         <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{team.leaderResidency}</span>
                                                     </div>
@@ -740,6 +752,14 @@ export default function AdminDashboard() {
                                                         <div>
                                                             <span style={{ color: '#9c8578', fontWeight: 600 }}>Roll Number:</span>
                                                             <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{member.rollNumber}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span style={{ color: '#9c8578', fontWeight: 600 }}>Course:</span>
+                                                            <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{member.course}</span>
+                                                        </div>
+                                                        <div>
+                                                            <span style={{ color: '#9c8578', fontWeight: 600 }}>Batch:</span>
+                                                            <span style={{ color: '#e0e0e0', marginLeft: '8px' }}>{member.batch}</span>
                                                         </div>
                                                         <div>
                                                             <span style={{ color: '#9c8578', fontWeight: 600 }}>Residency:</span>

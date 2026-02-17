@@ -14,6 +14,8 @@ interface MemberData {
   rollNumber: string;
   residency: 'Hosteller' | 'Day Scholar';
   messFood?: boolean;
+  course: 'BTech' | 'BBA' | 'BDes';
+  batch: string;
 }
 
 interface FormData {
@@ -24,10 +26,12 @@ interface FormData {
   leaderRollNumber: string;
   leaderResidency: 'Hosteller' | 'Day Scholar';
   leaderMessFood?: boolean;
+  leaderCourse: 'BTech' | 'BBA' | 'BDes';
+  leaderBatch: string;
   members: MemberData[];
 }
 
-const initialMember: MemberData = { name: '', email: '', whatsApp: '', rollNumber: '', residency: 'Hosteller' };
+const initialMember: MemberData = { name: '', email: '', whatsApp: '', rollNumber: '', residency: 'Hosteller', course: 'BTech', batch: '' };
 
 const initialForm: FormData = {
   teamName: '',
@@ -36,6 +40,8 @@ const initialForm: FormData = {
   leaderWhatsApp: '',
   leaderRollNumber: '',
   leaderResidency: 'Hosteller',
+  leaderCourse: 'BTech',
+  leaderBatch: '',
   members: [{ ...initialMember }, { ...initialMember }, { ...initialMember }],
 };
 
@@ -739,7 +745,7 @@ export default function Home() {
                   lineHeight: 1.6,
                 }}>
                   Day scholars who wish to avail mess facilities during the Pre-Hackathon will be required to pay for the meals separately.
-                  Otherwise you have to arrange your own food with cafeteria or somewhere else. 
+                  Otherwise you have to arrange your own food with cafeteria or somewhere else.
                 </p>
               </div>
             </div>
@@ -784,7 +790,7 @@ export default function Home() {
               </div>
             </div>
 
-           
+
             {/* Rule 7: ID Cards Required */}
             <div style={{
               background: 'rgba(207,157,123,0.05)',
@@ -941,6 +947,8 @@ export default function Home() {
                     {renderInput('JKLU Email', form.leaderEmail, (v) => updateLeaderField('leaderEmail', v), 'leaderEmail', 'name@jklu.edu.in', 'email', '📧')}
                     {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
                     {renderInput('Roll Number', form.leaderRollNumber, (v) => updateLeaderField('leaderRollNumber', v), 'leaderRollNumber', 'e.g. 202*btech***', 'text', '🎓')}
+                    {renderSelect('Course', form.leaderCourse, (v) => updateLeaderField('leaderCourse', v as any), 'leaderCourse', ['BTech', 'BBA', 'BDes'], '📚')}
+                    {renderInput('Batch/Year', form.leaderBatch, (v) => updateLeaderField('leaderBatch', v), 'leaderBatch', 'e.g. 2024', 'text', '📅')}
                     {renderSelect('Residence Type', form.leaderResidency, (v) => updateLeaderField('leaderResidency', v as any), 'leaderResidency', ['Hosteller', 'Day Scholar'], '🏠')}
                     {form.leaderResidency === 'Day Scholar' && (
                       <>
@@ -979,6 +987,8 @@ export default function Home() {
                       {renderInput('JKLU Email', form.members[i].email, (v) => updateMemberField(i, 'email', v), `member${i}.email`, 'name@jklu.edu.in', 'email', '📧')}
                       {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
                       {renderInput('Roll Number', form.members[i].rollNumber, (v) => updateMemberField(i, 'rollNumber', v), `member${i}.rollNumber`, 'e.g. 202*btech***', 'text', '🎓')}
+                      {renderSelect('Course', form.members[i].course, (v) => updateMemberField(i, 'course', v as any), `member${i}.course`, ['BTech', 'BBA', 'BDes'], '📚')}
+                      {renderInput('Batch/Year', form.members[i].batch, (v) => updateMemberField(i, 'batch', v), `member${i}.batch`, 'e.g. 2024', 'text', '📅')}
                       {renderSelect('Residence Type', form.members[i].residency, (v) => updateMemberField(i, 'residency', v as any), `member${i}.residency`, ['Hosteller', 'Day Scholar'], '🏠')}
                       {form.members[i].residency === 'Day Scholar' && (
                         <>
