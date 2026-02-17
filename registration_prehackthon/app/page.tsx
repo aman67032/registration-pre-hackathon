@@ -739,6 +739,7 @@ export default function Home() {
                   lineHeight: 1.6,
                 }}>
                   Day scholars who wish to avail mess facilities during the Pre-Hackathon will be required to pay for the meals separately.
+                  Otherwise you have to arrange your own food with cafeteria or somewhere else. 
                 </p>
               </div>
             </div>
@@ -783,47 +784,8 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Rule 7: Original Work */}
-            <div style={{
-              background: 'rgba(207,157,123,0.05)',
-              border: '1px solid rgba(207,157,123,0.15)',
-              borderRadius: '16px',
-              padding: '20px 24px',
-              display: 'flex',
-              alignItems: 'flex-start',
-              gap: '16px',
-              transition: 'all 0.3s ease',
-            }}
-              onMouseEnter={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.1)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
-              onMouseLeave={(e) => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
-            >
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
-                <polyline points="16 18 22 12 16 6"></polyline>
-                <polyline points="8 6 2 12 8 18"></polyline>
-              </svg>
-              <div style={{ flex: 1 }}>
-                <h3 style={{
-                  fontFamily: 'var(--font-orbitron)',
-                  fontSize: '16px',
-                  fontWeight: 700,
-                  color: '#CF9D7B',
-                  margin: '0 0 8px 0',
-                  letterSpacing: '0.5px',
-                }}>
-                  Original Work Only
-                </h3>
-                <p style={{
-                  color: '#a0a0a0',
-                  fontSize: '14px',
-                  margin: 0,
-                  lineHeight: 1.6,
-                }}>
-                  All submissions must be original work created during the hackathon. Plagiarism or use of pre-existing projects will lead to immediate disqualification.
-                </p>
-              </div>
-            </div>
-
-            {/* Rule 8: ID Cards Required */}
+           
+            {/* Rule 7: ID Cards Required */}
             <div style={{
               background: 'rgba(207,157,123,0.05)',
               border: '1px solid rgba(207,157,123,0.15)',
