@@ -13,6 +13,7 @@ interface MemberData {
   whatsApp: string;
   rollNumber: string;
   residency: 'Hosteller' | 'Day Scholar';
+  messFood?: boolean;
 }
 
 interface FormData {
@@ -22,6 +23,7 @@ interface FormData {
   leaderWhatsApp: string;
   leaderRollNumber: string;
   leaderResidency: 'Hosteller' | 'Day Scholar';
+  leaderMessFood?: boolean;
   members: MemberData[];
 }
 
@@ -135,14 +137,30 @@ export default function Home() {
   }, []);
 
   const updateLeaderField = useCallback((field: string, value: string) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
+    setForm((prev) => {
+      if (field === 'leaderMessFood') {
+        return { ...prev, leaderMessFood: value === 'true' } as FormData;
+      }
+      if (field === 'leaderResidency') {
+        // Clear messFood when switching residency type
+        return { ...prev, leaderResidency: value as 'Hosteller' | 'Day Scholar', leaderMessFood: undefined } as FormData;
+      }
+      return { ...prev, [field]: value } as FormData;
+    });
     setErrors((prev) => { const n = { ...prev }; delete n[field]; return n; });
   }, []);
 
   const updateMemberField = useCallback((index: number, field: string, value: string) => {
     setForm((prev) => {
       const members = [...prev.members];
-      members[index] = { ...members[index], [field]: value };
+      if (field === 'messFood') {
+        members[index] = { ...members[index], messFood: value === 'true' };
+      } else if (field === 'residency') {
+        // Clear messFood when switching residency type
+        members[index] = { ...members[index], residency: value as 'Hosteller' | 'Day Scholar', messFood: undefined };
+      } else {
+        members[index] = { ...members[index], [field]: value };
+      }
       return { ...prev, members };
     });
     setErrors((prev) => { const n = { ...prev }; delete n[`member${index}.${field}`]; return n; });
@@ -962,6 +980,14 @@ export default function Home() {
                     {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
                     {renderInput('Roll Number', form.leaderRollNumber, (v) => updateLeaderField('leaderRollNumber', v), 'leaderRollNumber', 'e.g. 202*btech***', 'text', '🎓')}
                     {renderSelect('Residence Type', form.leaderResidency, (v) => updateLeaderField('leaderResidency', v as any), 'leaderResidency', ['Hosteller', 'Day Scholar'], '🏠')}
+                    {form.leaderResidency === 'Day Scholar' && (
+                      <>
+                        {renderSelect('Will you take mess food?', form.leaderMessFood === true ? 'Yes' : form.leaderMessFood === false ? 'No' : 'No', (v) => updateLeaderField('leaderMessFood', v === 'Yes' ? 'true' : 'false'), 'leaderMessFood', ['Yes', 'No'], '🍽️')}
+                        <div style={{ marginBottom: '14px', padding: '12px 16px', background: 'rgba(232,98,26,0.1)', border: '1px solid rgba(232,98,26,0.25)', borderRadius: '10px', fontSize: '12px', color: '#E8C39E', lineHeight: '1.5' }}>
+                          <strong>📢 Note:</strong> No changes will be entered in future and payment is during offline registration if opting for mess.
+                        </div>
+                      </>
+                    )}
                   </div>
                 </div>
               )}
@@ -992,6 +1018,14 @@ export default function Home() {
                       {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
                       {renderInput('Roll Number', form.members[i].rollNumber, (v) => updateMemberField(i, 'rollNumber', v), `member${i}.rollNumber`, 'e.g. 202*btech***', 'text', '🎓')}
                       {renderSelect('Residence Type', form.members[i].residency, (v) => updateMemberField(i, 'residency', v as any), `member${i}.residency`, ['Hosteller', 'Day Scholar'], '🏠')}
+                      {form.members[i].residency === 'Day Scholar' && (
+                        <>
+                          {renderSelect('Will you take mess food?', form.members[i].messFood === true ? 'Yes' : form.members[i].messFood === false ? 'No' : 'No', (v) => updateMemberField(i, 'messFood', v === 'Yes' ? 'true' : 'false'), `member${i}.messFood`, ['Yes', 'No'], '🍽️')}
+                          <div style={{ marginBottom: '14px', padding: '12px 16px', background: 'rgba(232,98,26,0.1)', border: '1px solid rgba(232,98,26,0.25)', borderRadius: '10px', fontSize: '12px', color: '#E8C39E', lineHeight: '1.5', gridColumn: '1 / -1' }}>
+                            <strong>📢 Note:</strong> No changes will be entered in future and payment is during offline registration if opting for mess.
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
