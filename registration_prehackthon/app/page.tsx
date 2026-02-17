@@ -364,17 +364,7 @@ export default function Home() {
               style={{ objectFit: 'contain', height: 'clamp(50px, 10vw, 80px)', width: 'auto', maxWidth: '160px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.2))' }} />
           </div>
 
-          {/* Sponsor badge */}
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '7px 22px',
-            borderRadius: '30px', background: 'linear-gradient(135deg, rgba(207,157,123,0.1), rgba(114,75,57,0.1))',
-            border: '1px solid rgba(207,157,123,0.3)',
-            fontSize: '12px', color: '#CF9D7B', fontWeight: 600, marginBottom: '28px',
-            letterSpacing: '1px', textTransform: 'uppercase',
-            boxShadow: '0 0 15px rgba(207,157,123,0.1)',
-          }}>
-            ⚡ Powered by WScube Tech
-          </div>
+         
 
           {/* Main title with OriginTech font */}
           <h1 style={{
@@ -391,7 +381,7 @@ export default function Home() {
             textShadow: '0 0 30px rgba(207,157,123,0.2)',
           }}>
             PRE HACKATHON<br />
-            <span style={{ fontSize: '0.6em', color: '#a0a0a0', WebkitTextFillColor: '#a0a0a0' }}>FOR JKLU</span>
+            <span style={{ fontSize: '0.6em', color: '#a0a0a0', WebkitTextFillColor: '#a0a0a0' }}>Powered by WScube Tech</span>
           </h1>
 
           {/* Byline */}
