@@ -1,11 +1,21 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import Image from 'next/image';
 import dynamic from 'next/dynamic';
 
 const Scene3D = dynamic(() => import('./components/Scene3D'), { ssr: false });
 import Loader from './components/Loader';
+
+// ═══ TOGGLE THIS TO LOCK/UNLOCK REGISTRATION ═══
+const REGISTRATION_LOCKED = true;
+
+interface StatsData {
+  totalTeams: number;
+  totalPeople: number;
+  batchCounts: Record<string, number>;
+  residencyCounts: Record<string, number>;
+}
 
 interface MemberData {
   name: string;
@@ -112,6 +122,16 @@ export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState('');
+  const [stats, setStats] = useState<StatsData | null>(null);
+
+  // Fetch public stats
+  useEffect(() => {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+    fetch(`${API_URL}/api/admin/stats`)
+      .then(r => r.json())
+      .then(data => { if (data.success) setStats(data); })
+      .catch(() => { });
+  }, []);
 
   // Loader Effect - Wait for page load
   React.useEffect(() => {
@@ -851,9 +871,185 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ═══════════════ STATS SECTION ═══════════════ */}
+      {stats && (
+        <section style={{
+          position: 'relative', zIndex: 3,
+          padding: 'clamp(40px, 8vw, 60px) 20px 0',
+          maxWidth: '900px', margin: '0 auto',
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <h2 style={{
+              fontFamily: 'OriginTech, sans-serif', fontSize: 'clamp(28px, 5vw, 44px)',
+              fontWeight: 400, margin: '0 0 8px 0', letterSpacing: '2px', lineHeight: 1.1,
+              background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
+              backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+            }}>Registration Stats</h2>
+            <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>Live registration overview</p>
+          </div>
+
+          {/* Total cards */}
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+            {[
+              { icon: '👥', value: stats.totalTeams, label: 'Total Teams', color: '#CF9D7B' },
+              { icon: '🧑‍💻', value: stats.totalPeople, label: 'Total People', color: '#E8C39E' },
+            ].map((s, i) => (
+              <div key={i} style={{
+                flex: '1 1 180px', maxWidth: '220px', padding: '20px 24px', textAlign: 'center',
+                background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.2)',
+                borderRadius: '20px', backdropFilter: 'blur(20px)',
+                boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)',
+                transition: 'transform 0.3s ease',
+              }}
+                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
+                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+              >
+                <div style={{ fontSize: '28px', marginBottom: '6px' }}>{s.icon}</div>
+                <div style={{ fontSize: '28px', fontWeight: 800, color: s.color, fontFamily: 'var(--font-orbitron)' }}>{s.value}</div>
+                <div style={{ fontSize: '11px', color: '#9c8578', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '4px' }}>{s.label}</div>
+              </div>
+            ))}
+          </div>
+
+          {/* Batch-wise breakdown */}
+          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+            {Object.entries(stats.batchCounts).sort(([a], [b]) => a.localeCompare(b)).map(([batch, count], i) => {
+              const currentYear = new Date().getFullYear();
+              const batchNum = parseInt(batch);
+              const yearLabel = !isNaN(batchNum) ? `${currentYear - batchNum + (currentYear >= batchNum ? 1 : 0)}${['st', 'nd', 'rd'][(currentYear - batchNum + (currentYear >= batchNum ? 1 : 0)) - 1] || 'th'} Year` : '';
+              if (batch === '2025') return (
+                <div key={i} style={{
+                  flex: '1 1 140px', maxWidth: '180px', padding: '16px 20px', textAlign: 'center',
+                  background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.15)',
+                  borderRadius: '16px', backdropFilter: 'blur(20px)',
+                  transition: 'transform 0.3s ease',
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <div style={{ fontSize: '20px', marginBottom: '4px' }}>📅</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#CF9D7B', fontFamily: 'var(--font-orbitron)' }}>{count}</div>
+                  <div style={{ fontSize: '12px', color: '#ccc', fontWeight: 600, marginTop: '2px' }}>{batch}</div>
+                  <div style={{ fontSize: '10px', color: '#9c8578', marginTop: '2px' }}>(1st Year)</div>
+                </div>
+              );
+              return (
+                <div key={i} style={{
+                  flex: '1 1 140px', maxWidth: '180px', padding: '16px 20px', textAlign: 'center',
+                  background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.15)',
+                  borderRadius: '16px', backdropFilter: 'blur(20px)',
+                  transition: 'transform 0.3s ease',
+                }}
+                  onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-3px)'; }}
+                  onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+                >
+                  <div style={{ fontSize: '20px', marginBottom: '4px' }}>📅</div>
+                  <div style={{ fontSize: '24px', fontWeight: 800, color: '#CF9D7B', fontFamily: 'var(--font-orbitron)' }}>{count}</div>
+                  <div style={{ fontSize: '12px', color: '#ccc', fontWeight: 600, marginTop: '2px' }}>{batch}</div>
+                  {yearLabel && <div style={{ fontSize: '10px', color: '#9c8578', marginTop: '2px' }}>({yearLabel})</div>}
+                </div>
+              );
+            })}
+          </div>
+
+          {/* Residency breakdown */}
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            <div style={{
+              flex: '1 1 180px', maxWidth: '220px', padding: '20px 24px', textAlign: 'center',
+              background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(16,185,129,0.25)',
+              borderRadius: '20px', backdropFilter: 'blur(20px)', transition: 'transform 0.3s ease',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <div style={{ fontSize: '28px', marginBottom: '6px' }}>🏠</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: '#10B981', fontFamily: 'var(--font-orbitron)' }}>{stats.residencyCounts['Hosteller'] || 0}</div>
+              <div style={{ fontSize: '11px', color: '#9c8578', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '4px' }}>Hostellers</div>
+            </div>
+            <div style={{
+              flex: '1 1 180px', maxWidth: '220px', padding: '20px 24px', textAlign: 'center',
+              background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(245,158,11,0.25)',
+              borderRadius: '20px', backdropFilter: 'blur(20px)', transition: 'transform 0.3s ease',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <div style={{ fontSize: '28px', marginBottom: '6px' }}>🚗</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: '#f59e0b', fontFamily: 'var(--font-orbitron)' }}>{stats.residencyCounts['Day Scholar'] || 0}</div>
+              <div style={{ fontSize: '11px', color: '#9c8578', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '4px' }}>Day Scholars</div>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* ═══════════════ SPECIAL EVENTS SECTION ═══════════════ */}
+      <section style={{
+        position: 'relative', zIndex: 3,
+        padding: 'clamp(40px, 8vw, 60px) 20px 0',
+        maxWidth: '900px', margin: '0 auto',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h2 style={{
+            fontFamily: 'OriginTech, sans-serif', fontSize: 'clamp(28px, 5vw, 44px)',
+            fontWeight: 400, margin: '0 0 8px 0', letterSpacing: '2px', lineHeight: 1.1,
+            background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
+            backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>Special Events</h2>
+          <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>Highlights of the Night</p>
+        </div>
+
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+          <div style={{
+            flex: '1 1 300px', maxWidth: '400px', padding: '24px', textAlign: 'center',
+            background: 'linear-gradient(145deg, rgba(30, 22, 17, 0.9), rgba(114, 75, 57, 0.2))',
+            border: '1px solid rgba(207,157,123,0.3)',
+            borderRadius: '24px', backdropFilter: 'blur(20px)',
+            boxShadow: '0 10px 40px -10px rgba(0,0,0,0.6)',
+            transition: 'transform 0.3s ease, border-color 0.3s ease',
+            position: 'relative', overflow: 'hidden'
+          }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-6px)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.6)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.3)'; }}
+          >
+            {/* Midnight Badge */}
+            <div style={{
+              position: 'absolute', top: '12px', right: '12px',
+              padding: '4px 12px', borderRadius: '20px',
+              background: 'rgba(232, 98, 26, 0.2)',
+              border: '1px solid rgba(232, 98, 26, 0.4)',
+              color: '#E8C39E', fontSize: '10px', fontWeight: 800,
+              fontFamily: 'var(--font-orbitron)', letterSpacing: '1px'
+            }}>
+              MIDNIGHT
+            </div>
+
+            <div style={{ fontSize: '48px', marginBottom: '16px', filter: 'drop-shadow(0 0 10px rgba(207,157,123,0.4))' }}>🎸</div>
+            <h3 style={{
+              fontFamily: 'var(--font-orbitron)', fontSize: '22px',
+              fontWeight: 700, color: '#CF9D7B', marginBottom: '10px',
+              letterSpacing: '1px'
+            }}>Jamming Night</h3>
+            <p style={{ color: '#ccc', fontSize: '14px', lineHeight: 1.6, margin: 0 }}>
+              Unleash your creativity beyond code! Join us for an acoustic musical session at midnight to relax, vibe, and recharge for the hack.
+            </p>
+
+            <div style={{
+              marginTop: '20px', paddingTop: '16px',
+              borderTop: '1px solid rgba(207,157,123,0.1)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
+              color: '#9c8578', fontSize: '12px', fontWeight: 600
+            }}>
+              <span>🕒 12:00 AM</span>
+              <span style={{ opacity: 0.3 }}>•</span>
+              <span>📍 Main Hub</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ═══════════════ FORM SECTION ═══════════════ */}
       <div id="register" style={{ position: 'relative', zIndex: 3, scrollMarginTop: '60px' }}>
-        <form onSubmit={handleSubmit} style={{ maxWidth: '700px', margin: '0 auto', padding: 'clamp(28px, 5vw, 48px) 16px 72px' }}>
+        <div style={{ maxWidth: '700px', margin: '0 auto', padding: 'clamp(28px, 5vw, 48px) 16px 72px' }}>
 
           {/* Section title */}
           <div style={{ textAlign: 'center', marginBottom: '28px' }}>
@@ -870,170 +1066,234 @@ export default function Home() {
               <span className="glow-text">Team Registration</span>
             </h2>
             <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>
-              All fields are mandatory • Use your JKLU email
+              {REGISTRATION_LOCKED ? '🔒 Registrations are currently closed' : 'All fields are mandatory • Use your JKLU email'}
             </p>
           </div>
 
-          {/* Main card */}
-          <div className="glass-card" style={{
-            padding: 'clamp(24px, 4vw, 40px)', overflow: 'hidden', position: 'relative',
-            background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.2)',
-            boxShadow: '0 10px 40px rgba(0,0,0,0.4)', borderRadius: '24px',
-            backdropFilter: 'blur(20px)'
-          }}>
-            {/* Decorative top gradient bar */}
-            <div style={{
-              position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
-              background: 'linear-gradient(90deg, #724B39, #CF9D7B, #E8C39E, #CF9D7B)',
-            }} />
+          {REGISTRATION_LOCKED ? (
+            /* ═══ LOCKED STATE — Lock icon + skeleton dropdowns ═══ */
+            <div className="glass-card" style={{
+              padding: 'clamp(24px, 4vw, 40px)', overflow: 'hidden', position: 'relative',
+              background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.2)',
+              boxShadow: '0 10px 40px rgba(0,0,0,0.4)', borderRadius: '24px', backdropFilter: 'blur(20px)',
+            }}>
+              {/* Top gradient bar */}
+              <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '4px', background: 'linear-gradient(90deg, #724B39, #CF9D7B, #E8C39E, #CF9D7B)' }} />
 
-            {/* ── TEAM NAME ── */}
-            <div style={{ marginBottom: '24px', paddingTop: '8px' }}>
-              <h3 style={{
-                fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0', color: '#CF9D7B',
-                display: 'flex', alignItems: 'center', gap: '8px',
-                fontFamily: 'var(--font-orbitron)', letterSpacing: '1px'
-              }}>
-                <span style={{ fontSize: '18px' }}>🏆</span> Team Name
-              </h3>
-              <input
-                type="text"
-                className={`form-input ${errors.teamName ? 'error' : ''}`}
-                placeholder="Enter your team name"
-                value={form.teamName}
-                onChange={(e) => updateLeaderField('teamName', e.target.value)}
-                style={{
-                  fontSize: '16px', padding: '14px 18px', fontWeight: 600,
-                  background: 'rgba(18, 21, 25, 0.6)', border: '1px solid rgba(207,157,123,0.3)',
-                  color: '#e0e0e0', borderRadius: '12px', width: '100%', outline: 'none'
-                }}
-              />
-              {errors.teamName && <p style={{ color: '#fca5a5', fontSize: '11px', margin: '4px 0 0 0', fontWeight: 500 }}>⚠ {errors.teamName}</p>}
-            </div>
-
-            {/* Gradient divider */}
-            <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(207,157,123,0.2), transparent)', margin: '0 0 20px 0' }} />
-
-            {/* ── TEAM LEADER ── */}
-            <div style={{ marginBottom: '14px' }}>
-              <div className="section-header leader" onClick={() => toggleSection('leader')}
-                style={{
-                  background: 'rgba(207,157,123,0.1)', border: '1px solid rgba(207,157,123,0.2)',
-                  borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
-                  cursor: 'pointer', transition: 'all 0.3s ease'
+              {/* Lock icon */}
+              <div style={{ textAlign: 'center', padding: '32px 0 24px' }}>
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
+                  width: '80px', height: '80px', borderRadius: '50%',
+                  background: 'rgba(207,157,123,0.1)', border: '2px solid rgba(207,157,123,0.3)',
+                  animation: 'pulse 2s ease-in-out infinite',
                 }}>
-                <span style={{ fontSize: '18px' }}>👑</span>
-                <span style={{ flex: 1, fontWeight: 700, fontSize: '14px', color: '#CF9D7B', fontFamily: 'var(--font-orbitron)' }}>Team Leader</span>
-                <span style={{
-                  background: 'rgba(207,157,123,0.2)', color: '#CF9D7B', fontSize: '10px',
-                  padding: '4px 10px', borderRadius: '20px', fontWeight: 700, textTransform: 'uppercase'
-                }}>Leader</span>
-                <span style={{ transition: 'transform 0.3s ease', transform: openSections.leader ? 'rotate(180deg)' : 'rotate(0)', fontSize: '11px', color: '#CF9D7B' }}>▼</span>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+                  </svg>
+                </div>
+                <p style={{ color: '#CF9D7B', fontFamily: 'var(--font-orbitron)', fontSize: '14px', fontWeight: 700, marginTop: '16px', letterSpacing: '1px' }}>
+                  REGISTRATIONS CLOSED
+                </p>
+                <p style={{ color: '#9c8578', fontSize: '13px', marginTop: '4px' }}>
+                  Thank you for your interest! Stay tuned for updates.
+                </p>
               </div>
-              {openSections.leader && (
-                <div style={{ padding: '18px 4px 4px', animation: 'fadeIn 0.25s ease' }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
-                    {renderInput('Full Name', form.leaderName, (v) => updateLeaderField('leaderName', v), 'leaderName', 'XYZ', 'text', '👤')}
-                    {renderInput('JKLU Email', form.leaderEmail, (v) => updateLeaderField('leaderEmail', v), 'leaderEmail', 'name@jklu.edu.in', 'email', '📧')}
-                    {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
-                    {renderInput('Roll Number', form.leaderRollNumber, (v) => updateLeaderField('leaderRollNumber', v), 'leaderRollNumber', 'e.g. 202*btech***', 'text', '🎓')}
-                    {renderSelect('Course', form.leaderCourse, (v) => updateLeaderField('leaderCourse', v as any), 'leaderCourse', ['BTech', 'BBA', 'BDes', 'HSB'], '📚')}
-                    {renderInput('Batch/Year', form.leaderBatch, (v) => updateLeaderField('leaderBatch', v), 'leaderBatch', 'e.g. 2024', 'text', '📅')}
-                    {renderSelect('Residence Type', form.leaderResidency, (v) => updateLeaderField('leaderResidency', v as any), 'leaderResidency', ['Hosteller', 'Day Scholar'], '🏠')}
-                    {form.leaderResidency === 'Day Scholar' && (
-                      <>
-                        {renderSelect('Will you take mess food?', form.leaderMessFood === true ? 'Yes' : form.leaderMessFood === false ? 'No' : 'No', (v) => updateLeaderField('leaderMessFood', v === 'Yes' ? 'true' : 'false'), 'leaderMessFood', ['Yes', 'No'], '🍽️')}
-                        <div style={{ marginBottom: '14px', padding: '12px 16px', background: 'rgba(232,98,26,0.1)', border: '1px solid rgba(232,98,26,0.25)', borderRadius: '10px', fontSize: '12px', color: '#E8C39E', lineHeight: '1.5' }}>
-                          <strong>📢 Note:</strong> No changes will be entered in future and payment is during offline registration if opting for mess.
+
+              {/* Skeleton dropdown sections */}
+              {['Team Leader', 'Team Member 1', 'Team Member 2', 'Team Member 3'].map((label, i) => (
+                <div key={i} style={{ marginBottom: '14px' }}>
+                  <div style={{
+                    background: i === 0 ? 'rgba(207,157,123,0.1)' : 'rgba(22, 33, 39, 0.4)',
+                    border: i === 0 ? '1px solid rgba(207,157,123,0.2)' : '1px solid rgba(255,255,255,0.05)',
+                    borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
+                    opacity: 0.5, cursor: 'not-allowed',
+                  }}>
+                    <div style={{
+                      width: '18px', height: '18px', borderRadius: '4px',
+                      background: 'rgba(207,157,123,0.2)', animation: 'skeleton-pulse 1.5s ease-in-out infinite',
+                    }} />
+                    <span style={{
+                      flex: 1, fontWeight: 700, fontSize: '14px',
+                      color: i === 0 ? '#CF9D7B' : '#a0a0a0',
+                      fontFamily: 'var(--font-orbitron)',
+                    }}>{label}</span>
+                    <div style={{
+                      width: '50px', height: '20px', borderRadius: '20px',
+                      background: 'rgba(207,157,123,0.15)', animation: 'skeleton-pulse 1.5s ease-in-out infinite',
+                    }} />
+                    <span style={{ fontSize: '11px', color: '#9c8578', opacity: 0.5 }}>▼</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            /* ═══ UNLOCKED STATE — Normal form ═══ */
+            <form onSubmit={handleSubmit}>
+
+              {/* Main card */}
+              <div className="glass-card" style={{
+                padding: 'clamp(24px, 4vw, 40px)', overflow: 'hidden', position: 'relative',
+                background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.2)',
+                boxShadow: '0 10px 40px rgba(0,0,0,0.4)', borderRadius: '24px',
+                backdropFilter: 'blur(20px)'
+              }}>
+                {/* Decorative top gradient bar */}
+                <div style={{
+                  position: 'absolute', top: 0, left: 0, right: 0, height: '4px',
+                  background: 'linear-gradient(90deg, #724B39, #CF9D7B, #E8C39E, #CF9D7B)',
+                }} />
+
+                {/* ── TEAM NAME ── */}
+                <div style={{ marginBottom: '24px', paddingTop: '8px' }}>
+                  <h3 style={{
+                    fontSize: '14px', fontWeight: 700, margin: '0 0 12px 0', color: '#CF9D7B',
+                    display: 'flex', alignItems: 'center', gap: '8px',
+                    fontFamily: 'var(--font-orbitron)', letterSpacing: '1px'
+                  }}>
+                    <span style={{ fontSize: '18px' }}>🏆</span> Team Name
+                  </h3>
+                  <input
+                    type="text"
+                    className={`form-input ${errors.teamName ? 'error' : ''}`}
+                    placeholder="Enter your team name"
+                    value={form.teamName}
+                    onChange={(e) => updateLeaderField('teamName', e.target.value)}
+                    style={{
+                      fontSize: '16px', padding: '14px 18px', fontWeight: 600,
+                      background: 'rgba(18, 21, 25, 0.6)', border: '1px solid rgba(207,157,123,0.3)',
+                      color: '#e0e0e0', borderRadius: '12px', width: '100%', outline: 'none'
+                    }}
+                  />
+                  {errors.teamName && <p style={{ color: '#fca5a5', fontSize: '11px', margin: '4px 0 0 0', fontWeight: 500 }}>⚠ {errors.teamName}</p>}
+                </div>
+
+                {/* Gradient divider */}
+                <div style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(207,157,123,0.2), transparent)', margin: '0 0 20px 0' }} />
+
+                {/* ── TEAM LEADER ── */}
+                <div style={{ marginBottom: '14px' }}>
+                  <div className="section-header leader" onClick={() => toggleSection('leader')}
+                    style={{
+                      background: 'rgba(207,157,123,0.1)', border: '1px solid rgba(207,157,123,0.2)',
+                      borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
+                      cursor: 'pointer', transition: 'all 0.3s ease'
+                    }}>
+                    <span style={{ fontSize: '18px' }}>👑</span>
+                    <span style={{ flex: 1, fontWeight: 700, fontSize: '14px', color: '#CF9D7B', fontFamily: 'var(--font-orbitron)' }}>Team Leader</span>
+                    <span style={{
+                      background: 'rgba(207,157,123,0.2)', color: '#CF9D7B', fontSize: '10px',
+                      padding: '4px 10px', borderRadius: '20px', fontWeight: 700, textTransform: 'uppercase'
+                    }}>Leader</span>
+                    <span style={{ transition: 'transform 0.3s ease', transform: openSections.leader ? 'rotate(180deg)' : 'rotate(0)', fontSize: '11px', color: '#CF9D7B' }}>▼</span>
+                  </div>
+                  {openSections.leader && (
+                    <div style={{ padding: '18px 4px 4px', animation: 'fadeIn 0.25s ease' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+                        {renderInput('Full Name', form.leaderName, (v) => updateLeaderField('leaderName', v), 'leaderName', 'XYZ', 'text', '👤')}
+                        {renderInput('JKLU Email', form.leaderEmail, (v) => updateLeaderField('leaderEmail', v), 'leaderEmail', 'name@jklu.edu.in', 'email', '📧')}
+                        {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
+                        {renderInput('Roll Number', form.leaderRollNumber, (v) => updateLeaderField('leaderRollNumber', v), 'leaderRollNumber', 'e.g. 202*btech***', 'text', '🎓')}
+                        {renderSelect('Course', form.leaderCourse, (v) => updateLeaderField('leaderCourse', v as any), 'leaderCourse', ['BTech', 'BBA', 'BDes', 'HSB'], '📚')}
+                        {renderInput('Batch/Year', form.leaderBatch, (v) => updateLeaderField('leaderBatch', v), 'leaderBatch', 'e.g. 2024', 'text', '📅')}
+                        {renderSelect('Residence Type', form.leaderResidency, (v) => updateLeaderField('leaderResidency', v as any), 'leaderResidency', ['Hosteller', 'Day Scholar'], '🏠')}
+                        {form.leaderResidency === 'Day Scholar' && (
+                          <>
+                            {renderSelect('Will you take mess food?', form.leaderMessFood === true ? 'Yes' : form.leaderMessFood === false ? 'No' : 'No', (v) => updateLeaderField('leaderMessFood', v === 'Yes' ? 'true' : 'false'), 'leaderMessFood', ['Yes', 'No'], '🍽️')}
+                            <div style={{ marginBottom: '14px', padding: '12px 16px', background: 'rgba(232,98,26,0.1)', border: '1px solid rgba(232,98,26,0.25)', borderRadius: '10px', fontSize: '12px', color: '#E8C39E', lineHeight: '1.5' }}>
+                              <strong>📢 Note:</strong> No changes will be entered in future and payment is during offline registration if opting for mess.
+                            </div>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* ── MEMBERS ── */}
+                {memberConfig.map((mc, i) => (
+                  <div key={i} style={{ marginBottom: '14px' }}>
+                    <div className={`section-header ${mc.section}`} onClick={() => toggleSection(`member${i}`)}
+                      style={{
+                        background: 'rgba(22, 33, 39, 0.4)', border: '1px solid rgba(255,255,255,0.05)',
+                        borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
+                        cursor: 'pointer', transition: 'all 0.3s ease'
+                      }}>
+                      <span style={{ fontSize: '18px' }}>{mc.icon}</span>
+                      <span style={{ flex: 1, fontWeight: 700, fontSize: '14px', color: '#a0a0a0', fontFamily: 'var(--font-orbitron)' }}>Team {mc.label}</span>
+                      <span style={{
+                        background: 'rgba(255,255,255,0.05)', color: '#888', fontSize: '10px',
+                        padding: '4px 10px', borderRadius: '20px', fontWeight: 700, textTransform: 'uppercase'
+                      }}>{mc.label}</span>
+                      <span style={{ transition: 'transform 0.3s ease', transform: openSections[`member${i}`] ? 'rotate(180deg)' : 'rotate(0)', fontSize: '11px', color: '#9c8578' }}>▼</span>
+                    </div>
+                    {openSections[`member${i}`] && (
+                      <div style={{ padding: '18px 4px 4px', animation: 'fadeIn 0.25s ease' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+                          {renderInput('Full Name', form.members[i].name, (v) => updateMemberField(i, 'name', v), `member${i}.name`, 'Full name', 'text', '👤')}
+                          {renderInput('JKLU Email', form.members[i].email, (v) => updateMemberField(i, 'email', v), `member${i}.email`, 'name@jklu.edu.in', 'email', '📧')}
+                          {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
+                          {renderInput('Roll Number', form.members[i].rollNumber, (v) => updateMemberField(i, 'rollNumber', v), `member${i}.rollNumber`, 'e.g. 202*btech***', 'text', '🎓')}
+                          {renderSelect('Course', form.members[i].course, (v) => updateMemberField(i, 'course', v as any), `member${i}.course`, ['BTech', 'BBA', 'BDes', 'HSB'], '📚')}
+                          {renderInput('Batch/Year', form.members[i].batch, (v) => updateMemberField(i, 'batch', v), `member${i}.batch`, 'e.g. 2024', 'text', '📅')}
+                          {renderSelect('Residence Type', form.members[i].residency, (v) => updateMemberField(i, 'residency', v as any), `member${i}.residency`, ['Hosteller', 'Day Scholar'], '🏠')}
+                          {form.members[i].residency === 'Day Scholar' && (
+                            <>
+                              {renderSelect('Will you take mess food?', form.members[i].messFood === true ? 'Yes' : form.members[i].messFood === false ? 'No' : 'No', (v) => updateMemberField(i, 'messFood', v === 'Yes' ? 'true' : 'false'), `member${i}.messFood`, ['Yes', 'No'], '🍽️')}
+                              <div style={{ marginBottom: '14px', padding: '12px 16px', background: 'rgba(232,98,26,0.1)', border: '1px solid rgba(232,98,26,0.25)', borderRadius: '10px', fontSize: '12px', color: '#E8C39E', lineHeight: '1.5', gridColumn: '1 / -1' }}>
+                                <strong>📢 Note:</strong> No changes will be entered in future and payment is during offline registration if opting for mess.
+                              </div>
+                            </>
+                          )}
                         </div>
-                      </>
+                      </div>
                     )}
                   </div>
-                </div>
-              )}
-            </div>
+                ))}
 
-            {/* ── MEMBERS ── */}
-            {memberConfig.map((mc, i) => (
-              <div key={i} style={{ marginBottom: '14px' }}>
-                <div className={`section-header ${mc.section}`} onClick={() => toggleSection(`member${i}`)}
-                  style={{
-                    background: 'rgba(22, 33, 39, 0.4)', border: '1px solid rgba(255,255,255,0.05)',
-                    borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
-                    cursor: 'pointer', transition: 'all 0.3s ease'
+                {/* Error message */}
+                {submitError && (
+                  <div style={{
+                    marginTop: '14px', padding: '14px 18px', background: 'rgba(220, 38, 38, 0.15)',
+                    border: '1px solid rgba(220, 38, 38, 0.3)', borderRadius: '14px',
+                    color: '#fca5a5', fontSize: '14px', textAlign: 'center', fontWeight: 500,
                   }}>
-                  <span style={{ fontSize: '18px' }}>{mc.icon}</span>
-                  <span style={{ flex: 1, fontWeight: 700, fontSize: '14px', color: '#a0a0a0', fontFamily: 'var(--font-orbitron)' }}>Team {mc.label}</span>
-                  <span style={{
-                    background: 'rgba(255,255,255,0.05)', color: '#888', fontSize: '10px',
-                    padding: '4px 10px', borderRadius: '20px', fontWeight: 700, textTransform: 'uppercase'
-                  }}>{mc.label}</span>
-                  <span style={{ transition: 'transform 0.3s ease', transform: openSections[`member${i}`] ? 'rotate(180deg)' : 'rotate(0)', fontSize: '11px', color: '#9c8578' }}>▼</span>
-                </div>
-                {openSections[`member${i}`] && (
-                  <div style={{ padding: '18px 4px 4px', animation: 'fadeIn 0.25s ease' }}>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
-                      {renderInput('Full Name', form.members[i].name, (v) => updateMemberField(i, 'name', v), `member${i}.name`, 'Full name', 'text', '👤')}
-                      {renderInput('JKLU Email', form.members[i].email, (v) => updateMemberField(i, 'email', v), `member${i}.email`, 'name@jklu.edu.in', 'email', '📧')}
-                      {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
-                      {renderInput('Roll Number', form.members[i].rollNumber, (v) => updateMemberField(i, 'rollNumber', v), `member${i}.rollNumber`, 'e.g. 202*btech***', 'text', '🎓')}
-                      {renderSelect('Course', form.members[i].course, (v) => updateMemberField(i, 'course', v as any), `member${i}.course`, ['BTech', 'BBA', 'BDes', 'HSB'], '📚')}
-                      {renderInput('Batch/Year', form.members[i].batch, (v) => updateMemberField(i, 'batch', v), `member${i}.batch`, 'e.g. 2024', 'text', '📅')}
-                      {renderSelect('Residence Type', form.members[i].residency, (v) => updateMemberField(i, 'residency', v as any), `member${i}.residency`, ['Hosteller', 'Day Scholar'], '🏠')}
-                      {form.members[i].residency === 'Day Scholar' && (
-                        <>
-                          {renderSelect('Will you take mess food?', form.members[i].messFood === true ? 'Yes' : form.members[i].messFood === false ? 'No' : 'No', (v) => updateMemberField(i, 'messFood', v === 'Yes' ? 'true' : 'false'), `member${i}.messFood`, ['Yes', 'No'], '🍽️')}
-                          <div style={{ marginBottom: '14px', padding: '12px 16px', background: 'rgba(232,98,26,0.1)', border: '1px solid rgba(232,98,26,0.25)', borderRadius: '10px', fontSize: '12px', color: '#E8C39E', lineHeight: '1.5', gridColumn: '1 / -1' }}>
-                            <strong>📢 Note:</strong> No changes will be entered in future and payment is during offline registration if opting for mess.
-                          </div>
-                        </>
-                      )}
-                    </div>
+                    ⚠️ {submitError}
                   </div>
                 )}
-              </div>
-            ))}
 
-            {/* Error message */}
-            {submitError && (
-              <div style={{
-                marginTop: '14px', padding: '14px 18px', background: 'rgba(220, 38, 38, 0.15)',
-                border: '1px solid rgba(220, 38, 38, 0.3)', borderRadius: '14px',
-                color: '#fca5a5', fontSize: '14px', textAlign: 'center', fontWeight: 500,
-              }}>
-                ⚠️ {submitError}
+                {/* Submit Button */}
+                <div style={{ marginTop: '28px', textAlign: 'center' }}>
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    style={{
+                      background: isSubmitting ? '#333' : 'linear-gradient(135deg, #CF9D7B, #724B39)',
+                      color: isSubmitting ? '#666' : '#121519',
+                      padding: '16px 48px', borderRadius: '50px',
+                      border: 'none', fontSize: '16px', fontWeight: 800,
+                      cursor: isSubmitting ? 'not-allowed' : 'pointer',
+                      boxShadow: isSubmitting ? 'none' : '0 10px 30px rgba(207,157,123,0.25), inset 0 2px 5px rgba(255,255,255,0.2)',
+                      fontFamily: 'var(--font-orbitron)', letterSpacing: '1.5px', textTransform: 'uppercase',
+                      transition: 'all 0.3s ease', transform: isSubmitting ? 'scale(0.98)' : 'scale(1)',
+                      width: '100%', maxWidth: '380px', position: 'relative', overflow: 'hidden'
+                    }}
+                  >
+                    {isSubmitting ? (
+                      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                        <span className="spinner" /> ⚡ PROCESSING...
+                      </span>
+                    ) : (
+                      <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
+                        🚀 CONFIRM REGISTRATION
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
-            )}
-
-            {/* Submit Button */}
-            <div style={{ marginTop: '28px', textAlign: 'center' }}>
-              <button
-                type="submit"
-                disabled={isSubmitting}
-                style={{
-                  background: isSubmitting ? '#333' : 'linear-gradient(135deg, #CF9D7B, #724B39)',
-                  color: isSubmitting ? '#666' : '#121519',
-                  padding: '16px 48px', borderRadius: '50px',
-                  border: 'none', fontSize: '16px', fontWeight: 800,
-                  cursor: isSubmitting ? 'not-allowed' : 'pointer',
-                  boxShadow: isSubmitting ? 'none' : '0 10px 30px rgba(207,157,123,0.25), inset 0 2px 5px rgba(255,255,255,0.2)',
-                  fontFamily: 'var(--font-orbitron)', letterSpacing: '1.5px', textTransform: 'uppercase',
-                  transition: 'all 0.3s ease', transform: isSubmitting ? 'scale(0.98)' : 'scale(1)',
-                  width: '100%', maxWidth: '380px', position: 'relative', overflow: 'hidden'
-                }}
-              >
-                {isSubmitting ? (
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                    <span className="spinner" /> ⚡ PROCESSING...
-                  </span>
-                ) : (
-                  <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '10px' }}>
-                    🚀 CONFIRM REGISTRATION
-                  </span>
-                )}
-              </button>
-            </div>
-          </div>
+            </form>
+          )}
 
           {/* Contact for Queries */}
           <div style={{ textAlign: 'center', marginTop: '60px', marginBottom: '40px', padding: '0 20px' }}>
@@ -1079,7 +1339,7 @@ export default function Home() {
               <Image src="/JKLU White.png" alt="JKLU" width={90} height={40} style={{ objectFit: 'contain', height: '32px', width: 'auto' }} />
             </div>
           </div>
-        </form>
+        </div>
       </div>
 
       <style jsx global>{`
@@ -1155,6 +1415,8 @@ export default function Home() {
           animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @keyframes skeleton-pulse { 0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; } }
+        @keyframes pulse { 0%, 100% { opacity: 1; box-shadow: 0 0 20px rgba(207,157,123,0.2); } 50% { opacity: 0.7; box-shadow: 0 0 40px rgba(207,157,123,0.4); } }
         
         /* PREMIUM INPUT STYLES - COFFEE THEME */
         .form-input {
