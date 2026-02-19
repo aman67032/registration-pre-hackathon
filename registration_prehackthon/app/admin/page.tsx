@@ -417,15 +417,15 @@ export default function AdminDashboard() {
                 </div>
 
                 {/* Stats Bar */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-                    <StatCard icon="" value={stats.totalTeams} label="Total Teams" color="#CF9D7B" />
-                    <StatCard icon="" value={stats.totalPeople} label="Total People" color="#E8C39E" />
-                    <StatCard icon="" value={stats.dayScholars} label="Day Scholars" color="#2b6aceff" />
-                    <StatCard icon="" value={stats.hostellers} label="Hostellers" color="#8b5cf6" />
-                    <StatCard icon="" value={stats.messOpted} label="Mess Opted" color="#f59e0b" />
-                    <StatCard icon="" value={stats.batch2024} label="Batch 2024" color="#10b981" />
-                    <StatCard icon="" value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
-                    <StatCard icon="" value={stats.batchOther} label="Batch 2023" color="#ec4899" />
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100px, 100%), 1fr))', gap: 'clamp(8px, 1.5vw, 12px)', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>} value={stats.totalTeams} label="Total Teams" color="#CF9D7B" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8C39E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>} value={stats.totalPeople} label="Total People" color="#E8C39E" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2b6ace" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>} value={stats.dayScholars} label="Day Scholars" color="#2b6aceff" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" /><path d="M12 18h.01" /><path d="M8 6h8" /><path d="M8 10h8" /><path d="M8 14h4" /></svg>} value={stats.hostellers} label="Hostellers" color="#8b5cf6" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1" /><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z" /><line x1="6" y1="1" x2="6" y2="4" /><line x1="10" y1="1" x2="10" y2="4" /><line x1="14" y1="1" x2="14" y2="4" /></svg>} value={stats.messOpted} label="Mess Opted" color="#f59e0b" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /></svg>} value={stats.batch2024} label="Batch 2024" color="#10b981" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>} value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M9 16l2 2 4-4" /></svg>} value={stats.batchOther} label="Batch 2023" color="#ec4899" />
                 </div>
 
                 {/* Filters */}
