@@ -734,7 +734,7 @@ export default function Home() {
                   margin: 0,
                   lineHeight: 1.6,
                 }}>
-                  Day scholars who wish to avail mess facilities during the Pre-Hackathon will be required to pay for the meals separately.
+                  Day scholars who wish to avail mess facilities during the Pre-Hackathon will be required to pay for the meals separately.The total payment will be Rs.359.
                   Otherwise you have to arrange your own food with cafeteria or somewhere else.
                 </p>
               </div>
