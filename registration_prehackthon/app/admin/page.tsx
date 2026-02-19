@@ -418,14 +418,14 @@ export default function AdminDashboard() {
 
                 {/* Stats Bar */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px', marginBottom: '24px' }}>
-                    <StatCard icon="📋" value={stats.totalTeams} label="Total Teams" color="#CF9D7B" />
-                    <StatCard icon="👥" value={stats.totalPeople} label="Total People" color="#E8C39E" />
-                    <StatCard icon="🏠" value={stats.dayScholars} label="Day Scholars" color="#3b82f6" />
-                    <StatCard icon="🏨" value={stats.hostellers} label="Hostellers" color="#8b5cf6" />
-                    <StatCard icon="🍽️" value={stats.messOpted} label="Mess Opted" color="#f59e0b" />
-                    <StatCard icon="📅" value={stats.batch2024} label="Batch 2024" color="#10b981" />
-                    <StatCard icon="📅" value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
-                    <StatCard icon="📅" value={stats.batchOther} label="Other Batch" color="#ec4899" />
+                    <StatCard icon="" value={stats.totalTeams} label="Total Teams" color="#CF9D7B" />
+                    <StatCard icon="" value={stats.totalPeople} label="Total People" color="#E8C39E" />
+                    <StatCard icon="" value={stats.dayScholars} label="Day Scholars" color="#3b82f6" />
+                    <StatCard icon="" value={stats.hostellers} label="Hostellers" color="#8b5cf6" />
+                    <StatCard icon="" value={stats.messOpted} label="Mess Opted" color="#f59e0b" />
+                    <StatCard icon="" value={stats.batch2024} label="Batch 2024" color="#10b981" />
+                    <StatCard icon="" value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
+                    <StatCard icon="" value={stats.batchOther} label="Other Batch" color="#ec4899" />
                 </div>
 
                 {/* Filters */}
