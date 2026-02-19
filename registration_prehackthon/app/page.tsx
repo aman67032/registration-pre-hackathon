@@ -415,6 +415,19 @@ export default function Home() {
             <span style={{ width: '40px', height: '1px', background: '#CF9D7B', opacity: 0.5 }}></span>
           </div>
 
+          {/* Stats in Hero Section */}
+          {stats && (
+            <div style={{
+              display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '40px',
+              fontFamily: 'var(--font-orbitron)', fontSize: '12px', color: '#CF9D7B', fontWeight: 600,
+              textTransform: 'uppercase', letterSpacing: '1px'
+            }}>
+              <span>🚀 {stats.totalTeams} Teams Participating</span>
+              <span style={{ opacity: 0.3 }}>|</span>
+              <span>🔥 {stats.totalPeople} Hackers Joined</span>
+            </div>
+          )}
+
           {/* Description */}
           <p style={{
             color: '#a0a0a0',
@@ -872,48 +885,58 @@ export default function Home() {
       </section>
 
       {/* ═══════════════ STATS SECTION ═══════════════ */}
-      {stats && (
-        <section style={{
-          position: 'relative', zIndex: 3,
-          padding: 'clamp(40px, 8vw, 60px) 20px 0',
-          maxWidth: '900px', margin: '0 auto',
-        }}>
-          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-            <h2 style={{
-              fontFamily: 'OriginTech, sans-serif', fontSize: 'clamp(28px, 5vw, 44px)',
-              fontWeight: 400, margin: '0 0 8px 0', letterSpacing: '2px', lineHeight: 1.1,
-              background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
-              backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
-            }}>Registration Stats</h2>
-            <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>Live registration overview</p>
-          </div>
+      <section style={{
+        position: 'relative', zIndex: 3,
+        padding: 'clamp(40px, 8vw, 60px) 20px 0',
+        maxWidth: '900px', margin: '0 auto',
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+          <h2 style={{
+            fontFamily: 'OriginTech, sans-serif', fontSize: 'clamp(28px, 5vw, 44px)',
+            fontWeight: 400, margin: '0 0 8px 0', letterSpacing: '2px', lineHeight: 1.1,
+            background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
+            backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+          }}>Registration Stats</h2>
+          <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>Live registration overview</p>
+        </div>
 
-          {/* Total cards */}
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
-            {[
-              { icon: '👥', value: stats.totalTeams, label: 'Total Teams', color: '#CF9D7B' },
-              { icon: '🧑‍💻', value: stats.totalPeople, label: 'Total People', color: '#E8C39E' },
-            ].map((s, i) => (
+        {/* Total cards */}
+        <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+          {[
+            { icon: '👥', value: stats?.totalTeams ?? '...', label: 'Total Teams', color: '#CF9D7B' },
+            { icon: '🧑‍💻', value: stats?.totalPeople ?? '...', label: 'Total People', color: '#E8C39E' },
+          ].map((s, i) => (
+            <div key={i} style={{
+              flex: '1 1 180px', maxWidth: '220px', padding: '20px 24px', textAlign: 'center',
+              background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.2)',
+              borderRadius: '20px', backdropFilter: 'blur(20px)',
+              boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)',
+              transition: 'transform 0.3s ease',
+              opacity: stats ? 1 : 0.6
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+            >
+              <div style={{ fontSize: '28px', marginBottom: '6px' }}>{s.icon}</div>
+              <div style={{ fontSize: '28px', fontWeight: 800, color: s.color, fontFamily: 'var(--font-orbitron)' }}>{s.value}</div>
+              <div style={{ fontSize: '11px', color: '#9c8578', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '4px' }}>{s.label}</div>
+            </div>
+          ))}
+        </div>
+
+        {/* Batch-wise breakdown */}
+        <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
+          {!stats ? (
+            /* Skeleton state for batches */
+            [1, 2, 3, 4].map((_, i) => (
               <div key={i} style={{
-                flex: '1 1 180px', maxWidth: '220px', padding: '20px 24px', textAlign: 'center',
-                background: 'rgba(30, 22, 17, 0.85)', border: '1px solid rgba(207,157,123,0.2)',
-                borderRadius: '20px', backdropFilter: 'blur(20px)',
-                boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5)',
-                transition: 'transform 0.3s ease',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-4px)'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
-              >
-                <div style={{ fontSize: '28px', marginBottom: '6px' }}>{s.icon}</div>
-                <div style={{ fontSize: '28px', fontWeight: 800, color: s.color, fontFamily: 'var(--font-orbitron)' }}>{s.value}</div>
-                <div style={{ fontSize: '11px', color: '#9c8578', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '4px' }}>{s.label}</div>
-              </div>
-            ))}
-          </div>
-
-          {/* Batch-wise breakdown */}
-          <div style={{ display: 'flex', gap: '14px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '20px' }}>
-            {Object.entries(stats.batchCounts).sort(([a], [b]) => a.localeCompare(b)).map(([batch, count], i) => {
+                flex: '1 1 140px', maxWidth: '180px', height: '110px',
+                background: 'rgba(30, 22, 17, 0.4)', border: '1px solid rgba(207,157,123,0.05)',
+                borderRadius: '16px', animation: 'skeleton-pulse 1.5s infinite'
+              }} />
+            ))
+          ) : (
+            Object.entries(stats.batchCounts).sort(([a], [b]) => a.localeCompare(b)).map(([batch, count], i) => {
               const currentYear = new Date().getFullYear();
               const batchNum = parseInt(batch);
               const yearLabel = !isNaN(batchNum) ? `${currentYear - batchNum + (currentYear >= batchNum ? 1 : 0)}${['st', 'nd', 'rd'][(currentYear - batchNum + (currentYear >= batchNum ? 1 : 0)) - 1] || 'th'} Year` : '';
@@ -949,10 +972,22 @@ export default function Home() {
                   {yearLabel && <div style={{ fontSize: '10px', color: '#9c8578', marginTop: '2px' }}>({yearLabel})</div>}
                 </div>
               );
-            })}
-          </div>
+            })
+          )}
+        </div>
 
-          {/* Residency breakdown */}
+        {/* Residency breakdown */}
+        {!stats ? (
+          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
+            {[1, 2].map(i => (
+              <div key={i} style={{
+                flex: '1 1 180px', maxWidth: '220px', height: '120px',
+                background: 'rgba(30, 22, 17, 0.4)', border: '1px solid rgba(207,157,123,0.05)',
+                borderRadius: '20px', animation: 'skeleton-pulse 1.5s infinite'
+              }} />
+            ))}
+          </div>
+        ) : (
           <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', flexWrap: 'wrap' }}>
             <div style={{
               flex: '1 1 180px', maxWidth: '220px', padding: '20px 24px', textAlign: 'center',
@@ -979,8 +1014,8 @@ export default function Home() {
               <div style={{ fontSize: '11px', color: '#9c8578', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.8px', marginTop: '4px' }}>Day Scholars</div>
             </div>
           </div>
-        </section>
-      )}
+        )}
+      </section>
 
       {/* ═══════════════ SPECIAL EVENTS SECTION ═══════════════ */}
       <section style={{
@@ -1096,37 +1131,47 @@ export default function Home() {
                 <p style={{ color: '#CF9D7B', fontFamily: 'var(--font-orbitron)', fontSize: '14px', fontWeight: 700, marginTop: '16px', letterSpacing: '1px' }}>
                   REGISTRATIONS CLOSED
                 </p>
-                <p style={{ color: '#9c8578', fontSize: '13px', marginTop: '4px' }}>
-                  Thank you for your interest! Stay tuned for updates.
+                <p style={{ color: '#9c8578', fontSize: '13px', marginTop: '4px', maxWidth: '400px', margin: '4px auto 0' }}>
+                  Thank you for the overwhelming response! We have officially stopped receiving registrations.
                 </p>
+
+                {/* Visual Stats Summary within the lock card */}
+                {stats && (
+                  <div style={{
+                    marginTop: '24px', display: 'flex', gap: '12px',
+                    justifyContent: 'center', padding: '0 20px'
+                  }}>
+                    <div style={{ padding: '12px 16px', background: 'rgba(207,157,123,0.08)', borderRadius: '12px', border: '1px solid rgba(207,157,123,0.15)' }}>
+                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#CF9D7B', fontFamily: 'var(--font-orbitron)' }}>{stats.totalTeams}</div>
+                      <div style={{ fontSize: '9px', color: '#9c8578', fontWeight: 700, textTransform: 'uppercase' }}>Teams</div>
+                    </div>
+                    <div style={{ padding: '12px 16px', background: 'rgba(232, 195, 158, 0.08)', borderRadius: '12px', border: '1px solid rgba(232, 195, 158, 0.15)' }}>
+                      <div style={{ fontSize: '18px', fontWeight: 800, color: '#E8C39E', fontFamily: 'var(--font-orbitron)' }}>{stats.totalPeople}</div>
+                      <div style={{ fontSize: '9px', color: '#9c8578', fontWeight: 700, textTransform: 'uppercase' }}>People</div>
+                    </div>
+                  </div>
+                )}
               </div>
 
-              {/* Skeleton dropdown sections */}
-              {['Team Leader', 'Team Member 1', 'Team Member 2', 'Team Member 3'].map((label, i) => (
-                <div key={i} style={{ marginBottom: '14px' }}>
+              {/* Skeleton dropdown sections - refined to look like progress bars or status indicators */}
+              <div style={{ marginTop: '10px' }}>
+                <div style={{ marginBottom: '14px' }}>
                   <div style={{
-                    background: i === 0 ? 'rgba(207,157,123,0.1)' : 'rgba(22, 33, 39, 0.4)',
-                    border: i === 0 ? '1px solid rgba(207,157,123,0.2)' : '1px solid rgba(255,255,255,0.05)',
+                    background: 'rgba(207,157,123,0.05)',
+                    border: '1px solid rgba(207,157,123,0.1)',
                     borderRadius: '16px', padding: '16px', display: 'flex', alignItems: 'center', gap: '12px',
-                    opacity: 0.5, cursor: 'not-allowed',
+                    opacity: 0.8,
                   }}>
-                    <div style={{
-                      width: '18px', height: '18px', borderRadius: '4px',
-                      background: 'rgba(207,157,123,0.2)', animation: 'skeleton-pulse 1.5s ease-in-out infinite',
-                    }} />
+                    <span style={{ fontSize: '16px' }}>📊</span>
                     <span style={{
-                      flex: 1, fontWeight: 700, fontSize: '14px',
-                      color: i === 0 ? '#CF9D7B' : '#a0a0a0',
-                      fontFamily: 'var(--font-orbitron)',
-                    }}>{label}</span>
-                    <div style={{
-                      width: '50px', height: '20px', borderRadius: '20px',
-                      background: 'rgba(207,157,123,0.15)', animation: 'skeleton-pulse 1.5s ease-in-out infinite',
-                    }} />
-                    <span style={{ fontSize: '11px', color: '#9c8578', opacity: 0.5 }}>▼</span>
+                      flex: 1, fontWeight: 700, fontSize: '12px',
+                      color: '#a0a0a0',
+                      fontFamily: 'var(--font-orbitron)', letterSpacing: '0.5px'
+                    }}>REGISTRATION LIMIT REACHED</span>
+                    <span style={{ fontSize: '11px', color: '#10B981', fontWeight: 800 }}>100% FULL</span>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
           ) : (
             /* ═══ UNLOCKED STATE — Normal form ═══ */
