@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
@@ -106,6 +106,20 @@ export default function AdminDashboard() {
     // Expanded teams (for default view)
     const [expandedTeams, setExpandedTeams] = useState<Set<string>>(new Set());
 
+    // CSV dropdown
+    const [csvDropdownOpen, setCsvDropdownOpen] = useState(false);
+    const csvDropdownRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        const handleClickOutside = (e: MouseEvent) => {
+            if (csvDropdownRef.current && !csvDropdownRef.current.contains(e.target as Node)) {
+                setCsvDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
         if (!token) { router.push('/admin/login'); return; }
@@ -187,7 +201,8 @@ export default function AdminDashboard() {
         });
     }, []);
 
-    const handleDownload = async () => {
+    const handleTeamsCsvDownload = async () => {
+        setCsvDropdownOpen(false);
         try {
             const token = localStorage.getItem('adminToken');
             const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
@@ -198,11 +213,33 @@ export default function AdminDashboard() {
                 const blob = await res.blob();
                 const url = window.URL.createObjectURL(blob);
                 const a = document.createElement('a');
-                a.href = url; a.download = `registrations_${Date.now()}.csv`;
+                a.href = url; a.download = `teams_${Date.now()}.csv`;
                 document.body.appendChild(a); a.click(); a.remove();
                 window.URL.revokeObjectURL(url);
             } else { alert('Failed to download CSV'); }
         } catch { alert('Error downloading CSV'); }
+    };
+
+    const generatePeopleCSV = (people: Person[], filename: string) => {
+        setCsvDropdownOpen(false);
+        const escapeCSV = (val: any) => {
+            if (val === null || val === undefined) return '';
+            const str = String(val);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) return `"${str.replace(/"/g, '""')}"`;
+            return str;
+        };
+        const headers = ['Name', 'Email', 'WhatsApp', 'Roll Number', 'Course', 'Batch', 'Residency', 'Mess Food', 'Role', 'Team Name'];
+        const rows = people.map(p => [
+            p.name, p.email, p.whatsApp, p.rollNumber, p.course, p.batch,
+            p.residency, p.messFood ? 'Yes' : 'No', p.role, p.teamName,
+        ].map(escapeCSV).join(','));
+        const csv = [headers.join(','), ...rows].join('\n');
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `${filename}_${Date.now()}.csv`;
+        document.body.appendChild(a); a.click(); a.remove();
+        URL.revokeObjectURL(url);
     };
 
     const logout = () => { localStorage.removeItem('adminToken'); router.push('/admin/login'); };
@@ -315,12 +352,62 @@ export default function AdminDashboard() {
                                 : `${teams.length} team${teams.length !== 1 ? 's' : ''} registered (${allPeople.length} people)`}
                         </p>
                     </div>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                        <button onClick={handleDownload} style={{
-                            padding: '10px 20px', background: 'rgba(16, 185, 129, 0.2)',
-                            border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '10px',
-                            color: '#10b981', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
-                        }}>📥 CSV</button>
+                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        {/* CSV Dropdown */}
+                        <div ref={csvDropdownRef} style={{ position: 'relative' }}>
+                            <button onClick={() => setCsvDropdownOpen(prev => !prev)} style={{
+                                padding: '10px 20px', background: 'rgba(16, 185, 129, 0.2)',
+                                border: '1px solid rgba(16, 185, 129, 0.4)', borderRadius: '10px',
+                                color: '#10b981', fontSize: '13px', fontWeight: 700, cursor: 'pointer',
+                                display: 'flex', alignItems: 'center', gap: '6px',
+                            }}>
+                                📥 CSV <span style={{ fontSize: '10px', transition: 'transform 0.2s', transform: csvDropdownOpen ? 'rotate(180deg)' : 'rotate(0deg)' }}>▼</span>
+                            </button>
+                            {csvDropdownOpen && (
+                                <div style={{
+                                    position: 'absolute', top: 'calc(100% + 6px)', right: 0, minWidth: '220px',
+                                    background: 'rgba(30, 22, 17, 0.95)', backdropFilter: 'blur(20px)',
+                                    border: '1px solid rgba(207,157,123,0.25)', borderRadius: '10px',
+                                    boxShadow: '0 8px 32px rgba(0,0,0,0.5)', zIndex: 50, overflow: 'hidden',
+                                }}>
+                                    <button onClick={handleTeamsCsvDownload} style={{
+                                        width: '100%', padding: '12px 16px', background: 'transparent',
+                                        border: 'none', borderBottom: '1px solid rgba(207,157,123,0.1)',
+                                        color: '#e0e0e0', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                                        textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px',
+                                    }}
+                                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(207,157,123,0.1)')}
+                                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                                    >
+                                        📋 Teams CSV
+                                    </button>
+                                    <button onClick={() => generatePeopleCSV(allPeople, 'all_individuals')} style={{
+                                        width: '100%', padding: '12px 16px', background: 'transparent',
+                                        border: 'none', borderBottom: hasActiveFilters ? '1px solid rgba(207,157,123,0.1)' : 'none',
+                                        color: '#e0e0e0', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                                        textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px',
+                                    }}
+                                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(207,157,123,0.1)')}
+                                        onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                                    >
+                                        👥 All Individuals CSV
+                                    </button>
+                                    {hasActiveFilters && (
+                                        <button onClick={() => generatePeopleCSV(filteredPeople, 'filtered_individuals')} style={{
+                                            width: '100%', padding: '12px 16px', background: 'transparent',
+                                            border: 'none',
+                                            color: '#10b981', fontSize: '13px', fontWeight: 600, cursor: 'pointer',
+                                            textAlign: 'left', display: 'flex', alignItems: 'center', gap: '8px',
+                                        }}
+                                            onMouseEnter={e => (e.currentTarget.style.background = 'rgba(16,185,129,0.1)')}
+                                            onMouseLeave={e => (e.currentTarget.style.background = 'transparent')}
+                                        >
+                                            🔍 Filtered ({filteredPeople.length}) CSV
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
                         <button onClick={logout} style={{
                             padding: '10px 20px', background: 'rgba(220, 38, 38, 0.2)',
                             border: '1px solid rgba(220, 38, 38, 0.4)', borderRadius: '10px',
