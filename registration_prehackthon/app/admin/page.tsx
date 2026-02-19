@@ -13,7 +13,7 @@ interface Member {
     rollNumber: string;
     residency: 'Hosteller' | 'Day Scholar';
     messFood?: boolean;
-    course: 'BTech' | 'BBA' | 'BDes';
+    course: 'BTech' | 'BBA' | 'BDes' | 'HSB';
     batch: string;
 }
 
@@ -26,7 +26,7 @@ interface Team {
     leaderRollNumber: string;
     leaderResidency: 'Hosteller' | 'Day Scholar';
     leaderMessFood?: boolean;
-    leaderCourse: 'BTech' | 'BBA' | 'BDes';
+    leaderCourse: 'BTech' | 'BBA' | 'BDes' | 'HSB';
     leaderBatch: string;
     members: Member[];
     createdAt: string;
@@ -478,7 +478,7 @@ export default function AdminDashboard() {
                         <div>
                             <label style={labelStyle}>Course</label>
                             <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)} style={selectStyle}>
-                                <option value="All" style={optionStyle}>All</option><option value="BTech" style={optionStyle}>BTech</option><option value="BBA" style={optionStyle}>BBA</option><option value="BDes" style={optionStyle}>BDes</option>
+                                <option value="All" style={optionStyle}>All</option><option value="BTech" style={optionStyle}>BTech</option><option value="BBA" style={optionStyle}>BBA</option><option value="BDes" style={optionStyle}>BDes</option><option value="HSB" style={optionStyle}>HSB</option>
                             </select>
                         </div>
                     </div>

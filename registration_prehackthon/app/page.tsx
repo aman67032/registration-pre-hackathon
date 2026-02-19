@@ -14,7 +14,7 @@ interface MemberData {
   rollNumber: string;
   residency: 'Hosteller' | 'Day Scholar';
   messFood?: boolean;
-  course: 'BTech' | 'BBA' | 'BDes';
+  course: 'BTech' | 'BBA' | 'BDes' | 'HSB';
   batch: string;
 }
 
@@ -26,7 +26,7 @@ interface FormData {
   leaderRollNumber: string;
   leaderResidency: 'Hosteller' | 'Day Scholar';
   leaderMessFood?: boolean;
-  leaderCourse: 'BTech' | 'BBA' | 'BDes';
+  leaderCourse: 'BTech' | 'BBA' | 'BDes' | 'HSB';
   leaderBatch: string;
   members: MemberData[];
 }
@@ -364,7 +364,7 @@ export default function Home() {
               style={{ objectFit: 'contain', height: 'clamp(50px, 10vw, 80px)', width: 'auto', maxWidth: '160px', filter: 'drop-shadow(0 0 10px rgba(255,255,255,0.2))' }} />
           </div>
 
-         
+
 
           {/* Main title with OriginTech font */}
           <h1 style={{
@@ -937,7 +937,7 @@ export default function Home() {
                     {renderInput('JKLU Email', form.leaderEmail, (v) => updateLeaderField('leaderEmail', v), 'leaderEmail', 'name@jklu.edu.in', 'email', '📧')}
                     {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
                     {renderInput('Roll Number', form.leaderRollNumber, (v) => updateLeaderField('leaderRollNumber', v), 'leaderRollNumber', 'e.g. 202*btech***', 'text', '🎓')}
-                    {renderSelect('Course', form.leaderCourse, (v) => updateLeaderField('leaderCourse', v as any), 'leaderCourse', ['BTech', 'BBA', 'BDes'], '📚')}
+                    {renderSelect('Course', form.leaderCourse, (v) => updateLeaderField('leaderCourse', v as any), 'leaderCourse', ['BTech', 'BBA', 'BDes', 'HSB'], '📚')}
                     {renderInput('Batch/Year', form.leaderBatch, (v) => updateLeaderField('leaderBatch', v), 'leaderBatch', 'e.g. 2024', 'text', '📅')}
                     {renderSelect('Residence Type', form.leaderResidency, (v) => updateLeaderField('leaderResidency', v as any), 'leaderResidency', ['Hosteller', 'Day Scholar'], '🏠')}
                     {form.leaderResidency === 'Day Scholar' && (
@@ -977,7 +977,7 @@ export default function Home() {
                       {renderInput('JKLU Email', form.members[i].email, (v) => updateMemberField(i, 'email', v), `member${i}.email`, 'name@jklu.edu.in', 'email', '📧')}
                       {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
                       {renderInput('Roll Number', form.members[i].rollNumber, (v) => updateMemberField(i, 'rollNumber', v), `member${i}.rollNumber`, 'e.g. 202*btech***', 'text', '🎓')}
-                      {renderSelect('Course', form.members[i].course, (v) => updateMemberField(i, 'course', v as any), `member${i}.course`, ['BTech', 'BBA', 'BDes'], '📚')}
+                      {renderSelect('Course', form.members[i].course, (v) => updateMemberField(i, 'course', v as any), `member${i}.course`, ['BTech', 'BBA', 'BDes', 'HSB'], '📚')}
                       {renderInput('Batch/Year', form.members[i].batch, (v) => updateMemberField(i, 'batch', v), `member${i}.batch`, 'e.g. 2024', 'text', '📅')}
                       {renderSelect('Residence Type', form.members[i].residency, (v) => updateMemberField(i, 'residency', v as any), `member${i}.residency`, ['Hosteller', 'Day Scholar'], '🏠')}
                       {form.members[i].residency === 'Day Scholar' && (
