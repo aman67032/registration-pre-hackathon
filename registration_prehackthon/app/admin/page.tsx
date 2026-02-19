@@ -68,21 +68,21 @@ function flattenTeams(teams: Team[]): Person[] {
 }
 
 // Stat Card
-function StatCard({ icon, value, label, color }: { icon: string; value: string | number; label: string; color: string }) {
+function StatCard({ icon, value, label, color }: { icon: React.ReactNode; value: string | number; label: string; color: string }) {
     return (
         <div style={{
             background: 'rgba(30, 22, 17, 0.85)', backdropFilter: 'blur(20px)',
             border: '1px solid rgba(207,157,123,0.15)', borderRadius: '14px',
-            padding: '18px 16px', textAlign: 'center', position: 'relative', overflow: 'hidden',
+            padding: 'clamp(12px, 2vw, 18px) clamp(10px, 1.5vw, 16px)', textAlign: 'center', position: 'relative', overflow: 'hidden',
         }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: color }} />
-            <div style={{ fontSize: '24px', marginBottom: '6px' }}>{icon}</div>
+            <div style={{ marginBottom: '6px', display: 'flex', justifyContent: 'center' }}>{icon}</div>
             <div style={{
-                fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, color,
+                fontSize: 'clamp(20px, 3vw, 30px)', fontWeight: 800, color,
                 fontFamily: 'var(--font-orbitron)', lineHeight: 1.2,
             }}>{value}</div>
             <div style={{
-                fontSize: '10px', color: '#a0a0a0', fontWeight: 600,
+                fontSize: 'clamp(8px, 1.2vw, 10px)', color: '#a0a0a0', fontWeight: 600,
                 textTransform: 'uppercase', letterSpacing: '0.6px', marginTop: '4px', lineHeight: 1.3,
             }}>{label}</div>
         </div>
@@ -305,7 +305,7 @@ export default function AdminDashboard() {
                     {person.role === 'Leader' ? '👑 Leader' : '👤 Member'}
                 </span>
             </div>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', fontSize: '12px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100%, 140px), 1fr))', gap: '8px', fontSize: '12px' }}>
                 <div style={{ gridColumn: '1 / -1' }}>
                     <span style={{ color: '#7a6b5d', fontWeight: 600 }}>Email: </span>
                     <span style={{ color: '#c0c0c0', wordBreak: 'break-all' }}>{person.email}</span>
@@ -335,10 +335,10 @@ export default function AdminDashboard() {
             </div></div>
             <Scene3D />
 
-            <div style={{ position: 'relative', zIndex: 3, padding: 'clamp(16px, 3vw, 40px) clamp(12px, 2vw, 20px)', maxWidth: '1400px', margin: '0 auto' }}>
+            <div style={{ position: 'relative', zIndex: 3, padding: 'clamp(12px, 3vw, 40px) clamp(8px, 2vw, 20px)', maxWidth: '1400px', margin: '0 auto' }}>
 
                 {/* Header */}
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', flexWrap: 'wrap', gap: '12px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'clamp(16px, 3vw, 24px)', flexWrap: 'wrap', gap: '10px' }}>
                     <div>
                         <h1 style={{
                             fontFamily: 'OriginTech, sans-serif', fontSize: 'clamp(24px, 5vw, 42px)',
@@ -420,12 +420,12 @@ export default function AdminDashboard() {
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '12px', marginBottom: '24px' }}>
                     <StatCard icon="" value={stats.totalTeams} label="Total Teams" color="#CF9D7B" />
                     <StatCard icon="" value={stats.totalPeople} label="Total People" color="#E8C39E" />
-                    <StatCard icon="" value={stats.dayScholars} label="Day Scholars" color="#3b82f6" />
+                    <StatCard icon="" value={stats.dayScholars} label="Day Scholars" color="#2b6aceff" />
                     <StatCard icon="" value={stats.hostellers} label="Hostellers" color="#8b5cf6" />
                     <StatCard icon="" value={stats.messOpted} label="Mess Opted" color="#f59e0b" />
                     <StatCard icon="" value={stats.batch2024} label="Batch 2024" color="#10b981" />
                     <StatCard icon="" value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
-                    <StatCard icon="" value={stats.batchOther} label="Other Batch" color="#ec4899" />
+                    <StatCard icon="" value={stats.batchOther} label="Batch 2023" color="#ec4899" />
                 </div>
 
                 {/* Filters */}
@@ -455,7 +455,7 @@ export default function AdminDashboard() {
                         />
                     </div>
 
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '12px' }}>
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(140px, 100%), 1fr))', gap: '10px' }}>
                         <div>
                             <label style={labelStyle}>Residency</label>
                             <select value={residencyFilter} onChange={(e) => setResidencyFilter(e.target.value)} style={selectStyle}>
@@ -512,7 +512,7 @@ export default function AdminDashboard() {
                                     </div>
                                 ) : (
                                     teams.map((team) => (
-                                        <div key={team._id} style={{ ...cardBg, padding: '22px', transition: 'all 0.3s ease' }}>
+                                        <div key={team._id} style={{ ...cardBg, padding: 'clamp(14px, 2.5vw, 22px)', transition: 'all 0.3s ease' }}>
                                             {/* Team Header (clickable) */}
                                             <div onClick={() => toggleTeam(team._id)} style={{
                                                 cursor: 'pointer', display: 'flex', justifyContent: 'space-between',
@@ -524,7 +524,7 @@ export default function AdminDashboard() {
                                                         fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(15px, 2.5vw, 18px)',
                                                         fontWeight: 700, color: '#CF9D7B', margin: '0 0 6px 0',
                                                     }}>{team.teamName}</h3>
-                                                    <p style={{ color: '#a0a0a0', fontSize: '13px', margin: '0 0 3px 0' }}>
+                                                    <p style={{ color: '#a0a0a0', fontSize: 'clamp(11px, 1.5vw, 13px)', margin: '0 0 3px 0', wordBreak: 'break-word' }}>
                                                         Leader: {team.leaderName} • {team.leaderEmail}
                                                     </p>
                                                     <p style={{ color: '#777', fontSize: '11px', margin: 0 }}>
@@ -550,7 +550,7 @@ export default function AdminDashboard() {
                                                             fontSize: '13px', fontWeight: 700, color: '#CF9D7B',
                                                             margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.8px',
                                                         }}>👑 Team Leader</h4>
-                                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                                                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: '8px' }}>
                                                             {renderMemberDetail('Name', team.leaderName)}
                                                             {renderMemberDetail('Email', team.leaderEmail)}
                                                             {renderMemberDetail('WhatsApp', team.leaderWhatsApp)}
@@ -573,7 +573,7 @@ export default function AdminDashboard() {
                                                                 fontSize: '12px', fontWeight: 700, color: '#a0a0a0',
                                                                 margin: '0 0 12px 0', textTransform: 'uppercase', letterSpacing: '0.8px',
                                                             }}>👤 Member {idx + 1}</h4>
-                                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '10px' }}>
+                                                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(180px, 100%), 1fr))', gap: '8px' }}>
                                                                 {renderMemberDetail('Name', member.name)}
                                                                 {renderMemberDetail('Email', member.email)}
                                                                 {renderMemberDetail('WhatsApp', member.whatsApp)}
@@ -604,8 +604,8 @@ export default function AdminDashboard() {
                                 ) : (
                                     <div style={{
                                         display: 'grid',
-                                        gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 340px), 1fr))',
-                                        gap: '14px',
+                                        gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 300px), 1fr))',
+                                        gap: 'clamp(10px, 2vw, 14px)',
                                     }}>
                                         {filteredPeople.map((person, idx) => renderPersonCard(person, idx))}
                                     </div>
