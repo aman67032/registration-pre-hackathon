@@ -8,6 +8,7 @@ const Scene3D = dynamic(() => import('./components/Scene3D'), { ssr: false });
 import Loader from './components/Loader';
 import ProblemStatements from './components/ProblemStatements';
 import Itinerary from './components/Itinerary';
+import TeamShowcase from './components/TeamShowcase';
 
 // ═══ TOGGLE THIS TO LOCK/UNLOCK REGISTRATION ═══
 const REGISTRATION_LOCKED = true;
@@ -1089,6 +1090,9 @@ export default function Home() {
 
       {/* ═══════════════ PROBLEM STATEMENTS SECTION ═══════════════ */}
       <ProblemStatements />
+
+      {/* ═══════════════ TEAM SHOWCASE SECTION ═══════════════ */}
+      <TeamShowcase />
 
       {/* ═══════════════ FORM SECTION ═══════════════ */}
       <div id="register" style={{ position: 'relative', zIndex: 3, scrollMarginTop: '60px' }}>
