@@ -29,6 +29,7 @@ interface Team {
     leaderCourse: 'BTech' | 'BBA' | 'BDes' | 'HSB';
     leaderBatch: string;
     isCheckedIn: boolean;
+    extensionBoardGiven: boolean; // Added for extension board
     members: Member[];
     createdAt: string;
 }
@@ -45,7 +46,8 @@ interface Person {
     role: 'Leader' | 'Member';
     teamName: string;
     teamId: string;
-    isCheckedIn: boolean; // Added for registration mode reference
+    isCheckedIn: boolean;
+    extensionBoardGiven: boolean; // Added
 }
 
 function flattenTeams(teams: Team[]): Person[] {
@@ -57,6 +59,7 @@ function flattenTeams(teams: Team[]): Person[] {
             messFood: team.leaderMessFood === true, course: team.leaderCourse || '',
             batch: team.leaderBatch || '', role: 'Leader', teamName: team.teamName, teamId: team._id,
             isCheckedIn: team.isCheckedIn || false,
+            extensionBoardGiven: team.extensionBoardGiven || false,
         });
         for (const m of team.members) {
             people.push({
@@ -65,6 +68,7 @@ function flattenTeams(teams: Team[]): Person[] {
                 messFood: m.messFood === true, course: m.course || '',
                 batch: m.batch || '', role: 'Member', teamName: team.teamName, teamId: team._id,
                 isCheckedIn: team.isCheckedIn || false,
+                extensionBoardGiven: team.extensionBoardGiven || false,
             });
         }
     }
@@ -300,6 +304,34 @@ export default function AdminDashboard() {
         } catch (error) {
             console.error("Check-in Error Details:", error);
             alert('Error updating check-in status. Check console for details.');
+        }
+    };
+
+    const toggleExtensionBoard = async (teamId: string, currentStatus: boolean | undefined) => {
+        try {
+            const token = localStorage.getItem('adminToken');
+            const newStatus = !currentStatus;
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+            setTeams(prev => prev.map(t => t._id === teamId ? { ...t, extensionBoardGiven: newStatus } : t));
+
+            const res = await fetch(`${API_URL}/api/admin/extension-board/${teamId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            const data = await res.json();
+            if (!data.success) {
+                setTeams(prev => prev.map(t => t._id === teamId ? { ...t, extensionBoardGiven: !!currentStatus } : t));
+                alert(data.message || 'Failed to update extension board status');
+            }
+        } catch (error) {
+            console.error("Extension Board Error Details:", error);
+            alert('Error updating extension board status.');
         }
     };
 
@@ -629,18 +661,32 @@ export default function AdminDashboard() {
 
                                                 <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                                                     {isRegistrationMode && (
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); toggleCheckIn(team._id, team.isCheckedIn); }}
-                                                            style={{
-                                                                padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
-                                                                background: team.isCheckedIn ? 'rgba(16, 185, 129, 0.2)' : 'rgba(232, 98, 26, 0.2)',
-                                                                border: `1px solid ${team.isCheckedIn ? 'rgba(16, 185, 129, 0.4)' : 'rgba(232, 98, 26, 0.4)'}`,
-                                                                color: team.isCheckedIn ? '#10B981' : '#E8621A',
-                                                                transition: 'all 0.3s ease'
-                                                            }}
-                                                        >
-                                                            {team.isCheckedIn ? '✅ Checked In' : 'Click to Check In'}
-                                                        </button>
+                                                        <>
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); toggleExtensionBoard(team._id, team.extensionBoardGiven); }}
+                                                                style={{
+                                                                    padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                                                                    background: team.extensionBoardGiven ? 'rgba(59, 130, 246, 0.2)' : 'rgba(255, 255, 255, 0.05)',
+                                                                    border: `1px solid ${team.extensionBoardGiven ? 'rgba(59, 130, 246, 0.4)' : 'rgba(255, 255, 255, 0.1)'}`,
+                                                                    color: team.extensionBoardGiven ? '#60a5fa' : '#a0a0a0',
+                                                                    transition: 'all 0.3s ease'
+                                                                }}
+                                                            >
+                                                                {team.extensionBoardGiven ? '🔌 Given' : '🔌 Give Board'}
+                                                            </button>
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); toggleCheckIn(team._id, team.isCheckedIn); }}
+                                                                style={{
+                                                                    padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                                                                    background: team.isCheckedIn ? 'rgba(16, 185, 129, 0.2)' : 'rgba(232, 98, 26, 0.2)',
+                                                                    border: `1px solid ${team.isCheckedIn ? 'rgba(16, 185, 129, 0.4)' : 'rgba(232, 98, 26, 0.4)'}`,
+                                                                    color: team.isCheckedIn ? '#10B981' : '#E8621A',
+                                                                    transition: 'all 0.3s ease'
+                                                                }}
+                                                            >
+                                                                {team.isCheckedIn ? '✅ Checked In' : 'Click to Check In'}
+                                                            </button>
+                                                        </>
                                                     )}
                                                     <div style={{
                                                         transform: expandedTeams.has(team._id) ? 'rotate(180deg)' : 'rotate(0deg)',
