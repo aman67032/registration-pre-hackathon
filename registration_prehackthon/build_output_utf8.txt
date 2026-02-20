@@ -1,0 +1,47 @@
+﻿
+> registration_prehackthon@0.1.0 build
+> next build
+
+Γû▓ Next.js 16.1.6 (Turbopack)
+
+  Creating an optimized production build ...
+Γ£ô Compiled successfully in 7.3s
+  Running TypeScript ...
+node.exe : Failed to compile.
+At C:\Program Files\nodejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: 
+(Fa    iled to compile.:String) [], 
+RemoteExceptio    n
+    + FullyQualifiedErrorId : 
+NativeCommandErro    r
+ 
+
+./app/admin/page.tsx:934:44
+Type error: Cannot find name 'inputStyle'.
+
+[0m [90m 932 |[39m                         
+        [33m<[39m[33minput[39m 
+type[33m=[39m[32m"text"[39m required value
+[33m=[39m{onSpotData[33m.[39mteamName}
+ [90m 933 |[39m                             
+        onChange[33m=[39m{e [33m=>[39m 
+setOnSpotData({ 
+[33m...[39monSpotData[33m,[39m 
+teamName[33m:[39m 
+e[33m.[39mtarget[33m.[39mvalue })}
+[31m[1m>[22m[39m[90m 934 |[39m          
+                           
+style[33m=[39m{inputStyle} 
+placeholder[33m=[39m[32m"Enter unique team 
+name"[39m [33m/[39m[33m>[39m
+ [90m     |[39m                             
+               [31m[1m^[22m[39m
+ [90m 935 |[39m                             
+[33m<[39m[33m/[39m[33mdiv[39m[33m>[39m
+ [90m 936 |[39m
+ [90m 937 |[39m                             
+{[90m/* Leader Info */[39m}[0m
+Next.js build worker exited with code: 1 and 
+signal: null
