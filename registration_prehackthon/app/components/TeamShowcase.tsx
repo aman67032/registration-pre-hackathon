@@ -74,16 +74,17 @@ export default function TeamShowcase() {
 
             {/* Room Filter Tabs */}
             <div style={{
-                display: 'flex', gap: '8px', justifyContent: 'center', flexWrap: 'wrap', marginBottom: '28px',
+                display: 'flex', gap: '8px', justifyContent: 'flex-start', flexWrap: 'nowrap', marginBottom: '28px',
                 padding: '4px', background: 'rgba(30,22,17,0.6)', borderRadius: '14px', backdropFilter: 'blur(10px)',
                 border: '1px solid rgba(207,157,123,0.12)', maxWidth: '800px', margin: '0 auto 28px',
+                overflowX: 'auto', WebkitOverflowScrolling: 'touch',
             }}>
                 <button
                     onClick={() => setActiveRoom('All')}
                     style={{
                         padding: '8px 18px', borderRadius: '10px', border: 'none', cursor: 'pointer',
                         fontSize: '12px', fontWeight: 700, fontFamily: 'var(--font-orbitron)',
-                        letterSpacing: '0.5px', textTransform: 'uppercase', transition: 'all 0.2s',
+                        letterSpacing: '0.5px', textTransform: 'uppercase', transition: 'all 0.2s', whiteSpace: 'nowrap',
                         background: activeRoom === 'All' ? 'linear-gradient(135deg, #CF9D7B, #724B39)' : 'transparent',
                         color: activeRoom === 'All' ? '#121519' : '#a0a0a0',
                     }}
@@ -97,7 +98,7 @@ export default function TeamShowcase() {
                             style={{
                                 padding: '8px 14px', borderRadius: '10px', border: 'none', cursor: 'pointer',
                                 fontSize: '11px', fontWeight: 600, fontFamily: 'var(--font-orbitron)',
-                                letterSpacing: '0.3px', transition: 'all 0.2s',
+                                letterSpacing: '0.3px', transition: 'all 0.2s', whiteSpace: 'nowrap',
                                 background: activeRoom === room ? 'linear-gradient(135deg, #CF9D7B, #724B39)' : 'transparent',
                                 color: activeRoom === room ? '#121519' : '#888',
                             }}
@@ -109,7 +110,7 @@ export default function TeamShowcase() {
             {/* Team Grid */}
             <div style={{
                 display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))',
+                gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))',
                 gap: '16px',
             }}>
                 {filtered.map((team, idx) => (
@@ -120,7 +121,7 @@ export default function TeamShowcase() {
                             backdropFilter: 'blur(16px)',
                             border: '1px solid rgba(207,157,123,0.15)',
                             borderRadius: '16px',
-                            padding: '20px',
+                            padding: 'clamp(14px, 3vw, 20px)',
                             position: 'relative',
                             overflow: 'hidden',
                             transition: 'all 0.3s ease',
@@ -222,12 +223,18 @@ export default function TeamShowcase() {
                 ))}
             </div>
 
-            {/* Fade-in animation */}
+            {/* Fade-in animation + mobile responsive */}
             <style>{`
         @keyframes fadeInUp {
           from { opacity: 0; transform: translateY(20px); }
           to { opacity: 1; transform: translateY(0); }
         }
+        @keyframes skeleton-pulse {
+          0%, 100% { opacity: 0.3; } 50% { opacity: 0.8; }
+        }
+        /* Hide scrollbar for room filter tabs */
+        #team-showcase > div:nth-child(2)::-webkit-scrollbar { display: none; }
+        #team-showcase > div:nth-child(2) { -ms-overflow-style: none; scrollbar-width: none; }
       `}</style>
         </section>
     );

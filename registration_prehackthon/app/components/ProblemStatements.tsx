@@ -129,22 +129,24 @@ export default function ProblemStatements() {
 
             {/* Categories Tabs */}
             <div style={{
-                display: 'flex', gap: '10px', justifyContent: 'center', flexWrap: 'wrap',
-                marginBottom: '30px'
+                display: 'flex', gap: '10px', justifyContent: 'flex-start', flexWrap: 'nowrap',
+                marginBottom: '30px', overflowX: 'auto', WebkitOverflowScrolling: 'touch' as any,
+                padding: '4px 0',
             }}>
                 {CATEGORIES.map((cat) => (
                     <button
                         key={cat.id}
                         onClick={() => setActiveTab(cat.id)}
                         style={{
-                            padding: '12px 24px', borderRadius: '30px',
+                            padding: 'clamp(8px, 2vw, 12px) clamp(14px, 3vw, 24px)', borderRadius: '30px',
                             background: activeTab === cat.id ? cat.color : 'rgba(255,255,255,0.05)',
                             color: activeTab === cat.id ? '#121519' : '#a0a0a0',
                             border: activeTab === cat.id ? `1px solid ${cat.color}` : '1px solid rgba(255,255,255,0.1)',
-                            fontFamily: 'var(--font-orbitron)', fontSize: '12px', fontWeight: 700,
+                            fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(10px, 2vw, 12px)', fontWeight: 700,
                             cursor: 'pointer', transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                             boxShadow: activeTab === cat.id ? `0 0 20px ${cat.color}44` : 'none',
-                            display: 'flex', alignItems: 'center', gap: '8px'
+                            display: 'flex', alignItems: 'center', gap: '8px', whiteSpace: 'nowrap' as any,
+                            flexShrink: 0,
                         }}
                     >
                         <span style={{ fontSize: '16px' }}>{cat.icon}</span>
@@ -178,7 +180,7 @@ export default function ProblemStatements() {
                         key={cat.id}
                         style={{
                             display: activeTab === cat.id ? 'grid' : 'none',
-                            gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))',
+                            gridTemplateColumns: 'repeat(auto-fill, minmax(min(260px, 100%), 1fr))',
                             gap: '16px',
                             animation: 'fadeIn 0.5s ease-out'
                         }}

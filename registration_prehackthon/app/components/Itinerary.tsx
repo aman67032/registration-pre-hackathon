@@ -55,7 +55,7 @@ export default function Itinerary() {
             }}>
                 {ITINERARY_DATA.map((day, idx) => (
                     <div key={idx} style={{
-                        flex: '1 1 400px', maxWidth: '480px',
+                        flex: '1 1 min(400px, 100%)', maxWidth: '480px',
                         background: 'rgba(30, 22, 17, 0.85)',
                         backdropFilter: 'blur(20px)',
                         border: '1px solid rgba(207,157,123,0.2)',
@@ -80,21 +80,21 @@ export default function Itinerary() {
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '1px', background: 'rgba(207,157,123,0.1)', borderRadius: '12px', overflow: 'hidden', border: '1px solid rgba(207,157,123,0.1)' }}>
                             {day.events.map((event, eIdx) => (
                                 <div key={eIdx} style={{
-                                    display: 'grid', gridTemplateColumns: 'minmax(140px, 1fr) 2fr',
+                                    display: 'grid', gridTemplateColumns: 'minmax(100px, auto) 1fr',
                                     background: 'rgba(30, 22, 17, 0.95)', transition: 'background 0.3s ease'
                                 }}
                                     onMouseEnter={e => { e.currentTarget.style.background = 'rgba(207,157,123,0.05)'; }}
                                     onMouseLeave={e => { e.currentTarget.style.background = 'rgba(30, 22, 17, 0.95)'; }}
                                 >
                                     <div style={{
-                                        padding: '16px 20px', borderRight: '1px solid rgba(207,157,123,0.1)',
-                                        color: '#9c8578', fontSize: '12.5px', fontWeight: 700,
+                                        padding: 'clamp(10px, 2vw, 16px) clamp(12px, 2vw, 20px)', borderRight: '1px solid rgba(207,157,123,0.1)',
+                                        color: '#9c8578', fontSize: 'clamp(10px, 2vw, 12.5px)', fontWeight: 700,
                                         fontFamily: 'var(--font-orbitron)', display: 'flex', alignItems: 'center'
                                     }}>
                                         {event.time}
                                     </div>
                                     <div style={{
-                                        padding: '16px 20px', color: '#ccc', fontSize: '14px', fontWeight: 500,
+                                        padding: 'clamp(10px, 2vw, 16px) clamp(12px, 2vw, 20px)', color: '#ccc', fontSize: 'clamp(12px, 2.5vw, 14px)', fontWeight: 500,
                                         display: 'flex', alignItems: 'center'
                                     }}>
                                         {event.activity}

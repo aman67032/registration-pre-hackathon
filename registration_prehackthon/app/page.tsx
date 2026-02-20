@@ -421,9 +421,9 @@ export default function Home() {
           {/* Stats in Hero Section */}
           {stats && (
             <div style={{
-              display: 'flex', gap: '20px', justifyContent: 'center', marginBottom: '40px',
-              fontFamily: 'var(--font-orbitron)', fontSize: '12px', color: '#CF9D7B', fontWeight: 600,
-              textTransform: 'uppercase', letterSpacing: '1px'
+              display: 'flex', gap: '12px', justifyContent: 'center', marginBottom: '40px',
+              fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(10px, 2.5vw, 12px)', color: '#CF9D7B', fontWeight: 600,
+              textTransform: 'uppercase', letterSpacing: '1px', flexWrap: 'wrap'
             }}>
               <span>🚀 {stats.totalTeams} Teams Participating</span>
               <span style={{ opacity: 0.3 }}>|</span>
@@ -445,12 +445,12 @@ export default function Home() {
 
           {/* 3D Perks Section */}
           <div style={{
-            display: 'flex', gap: '20px', justifyContent: 'center', flexWrap: 'wrap',
-            maxWidth: '900px', margin: '0 auto 48px', perspective: '1000px',
+            display: 'flex', gap: 'clamp(10px, 3vw, 20px)', justifyContent: 'center', flexWrap: 'wrap',
+            maxWidth: '900px', margin: '0 auto 48px', perspective: '1000px', padding: '0 10px',
           }}>
             {/* Perk 1: Internships */}
             <div className="perk-card" style={{
-              flex: '1 1 200px', padding: '24px', borderRadius: '20px',
+              flex: '1 1 clamp(140px, 30vw, 200px)', padding: 'clamp(16px, 3vw, 24px)', borderRadius: '20px',
               background: 'linear-gradient(145deg, rgba(30, 22, 17, 0.85), rgba(30, 22, 17, 0.6))',
               backdropFilter: 'blur(20px)', border: '1px solid rgba(207,157,123,0.2)',
               boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5), inset 0 0 20px rgba(207,157,123,0.05)',
@@ -468,7 +468,7 @@ export default function Home() {
 
             {/* Perk 2: Mentorship */}
             <div className="perk-card" style={{
-              flex: '1 1 200px', padding: '24px', borderRadius: '20px',
+              flex: '1 1 clamp(140px, 30vw, 200px)', padding: 'clamp(16px, 3vw, 24px)', borderRadius: '20px',
               background: 'linear-gradient(145deg, rgba(30, 22, 17, 0.85), rgba(30, 22, 17, 0.6))',
               backdropFilter: 'blur(20px)', border: '1px solid rgba(207,157,123,0.2)',
               boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5), inset 0 0 20px rgba(207,157,123,0.05)',
@@ -486,7 +486,7 @@ export default function Home() {
 
             {/* Perk 3: Prize Pool */}
             <div className="perk-card" style={{
-              flex: '1 1 200px', padding: '24px', borderRadius: '20px',
+              flex: '1 1 clamp(140px, 30vw, 200px)', padding: 'clamp(16px, 3vw, 24px)', borderRadius: '20px',
               background: 'linear-gradient(145deg, rgba(30, 22, 17, 0.85), rgba(30, 22, 17, 0.6))',
               backdropFilter: 'blur(20px)', border: '1px solid rgba(207,157,123,0.2)',
               boxShadow: '0 10px 30px -10px rgba(0,0,0,0.5), inset 0 0 20px rgba(207,157,123,0.05)',
@@ -1077,7 +1077,7 @@ export default function Home() {
               display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px',
               color: '#9c8578', fontSize: '12px', fontWeight: 600
             }}>
-              <span>🕒 12:00 AM</span>
+              <span>🕒 10:00 PM</span>
               <span style={{ opacity: 0.3 }}>•</span>
               <span>📍 Main Hub</span>
             </div>
@@ -1247,7 +1247,7 @@ export default function Home() {
                   </div>
                   {openSections.leader && (
                     <div style={{ padding: '18px 4px 4px', animation: 'fadeIn 0.25s ease' }}>
-                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))', gap: '16px' }}>
                         {renderInput('Full Name', form.leaderName, (v) => updateLeaderField('leaderName', v), 'leaderName', 'XYZ', 'text', '👤')}
                         {renderInput('JKLU Email', form.leaderEmail, (v) => updateLeaderField('leaderEmail', v), 'leaderEmail', 'name@jklu.edu.in', 'email', '📧')}
                         {renderInput('WhatsApp Number', form.leaderWhatsApp, (v) => updateLeaderField('leaderWhatsApp', v), 'leaderWhatsApp', '94********', 'tel', '📱')}
@@ -1287,7 +1287,7 @@ export default function Home() {
                     </div>
                     {openSections[`member${i}`] && (
                       <div style={{ padding: '18px 4px 4px', animation: 'fadeIn 0.25s ease' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '16px' }}>
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(250px, 100%), 1fr))', gap: '16px' }}>
                           {renderInput('Full Name', form.members[i].name, (v) => updateMemberField(i, 'name', v), `member${i}.name`, 'Full name', 'text', '👤')}
                           {renderInput('JKLU Email', form.members[i].email, (v) => updateMemberField(i, 'email', v), `member${i}.email`, 'name@jklu.edu.in', 'email', '📧')}
                           {renderInput('WhatsApp Number', form.members[i].whatsApp, (v) => updateMemberField(i, 'whatsApp', v), `member${i}.whatsApp`, '94********', 'tel', '📱')}
@@ -1510,6 +1510,30 @@ export default function Home() {
           color: #E8C39E !important;
           text-shadow: 0 0 10px rgba(207,157,123,0.6);
           border-bottom-color: #E8C39E !important;
+        }
+
+        /* ════════ MOBILE RESPONSIVE ════════ */
+        @media (max-width: 768px) {
+          .perk-card {
+            flex-basis: 140px !important;
+            padding: 16px !important;
+          }
+          .perk-card h3 {
+            font-size: 15px !important;
+          }
+          .perk-card p {
+            font-size: 12px !important;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .perk-card {
+            flex-basis: 100% !important;
+            padding: 14px !important;
+          }
+          .perk-card div:first-child {
+            font-size: 32px !important;
+          }
         }
       `}</style>
     </div>

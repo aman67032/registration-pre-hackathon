@@ -1,0 +1,10 @@
+﻿[dotenv@17.3.1] injecting env (1) from .env -- tip: ≡ƒñû agentic secret storage: https://dotenvx.com/as2
+Total teams: 69
+Checked in: 64
+With submissions: 63
+
+Teams with submission but NOT checked in (0):
+Room numbers fixed: 0
+
+Final room tabs: EB1 - 105, EB2 - 104, EB2 - 105, EB2 - 202, EB2 - 204, EB2 - 205, EB2 - 206
+Final checked in: 64
