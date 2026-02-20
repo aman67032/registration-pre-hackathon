@@ -28,6 +28,7 @@ interface Team {
     leaderMessFood?: boolean;
     leaderCourse: 'BTech' | 'BBA' | 'BDes' | 'HSB';
     leaderBatch: string;
+    isCheckedIn: boolean;
     members: Member[];
     createdAt: string;
 }
@@ -44,6 +45,7 @@ interface Person {
     role: 'Leader' | 'Member';
     teamName: string;
     teamId: string;
+    isCheckedIn: boolean; // Added for registration mode reference
 }
 
 function flattenTeams(teams: Team[]): Person[] {
@@ -54,6 +56,7 @@ function flattenTeams(teams: Team[]): Person[] {
             rollNumber: team.leaderRollNumber, residency: team.leaderResidency,
             messFood: team.leaderMessFood === true, course: team.leaderCourse || '',
             batch: team.leaderBatch || '', role: 'Leader', teamName: team.teamName, teamId: team._id,
+            isCheckedIn: team.isCheckedIn || false,
         });
         for (const m of team.members) {
             people.push({
@@ -61,6 +64,7 @@ function flattenTeams(teams: Team[]): Person[] {
                 rollNumber: m.rollNumber, residency: m.residency,
                 messFood: m.messFood === true, course: m.course || '',
                 batch: m.batch || '', role: 'Member', teamName: team.teamName, teamId: team._id,
+                isCheckedIn: team.isCheckedIn || false,
             });
         }
     }
@@ -95,6 +99,9 @@ export default function AdminDashboard() {
     const [isLoading, setIsLoading] = useState(true);
     const [isCheckingAuth, setIsCheckingAuth] = useState(true);
     const [error, setError] = useState('');
+
+    // Registration Mode State
+    const [isRegistrationMode, setIsRegistrationMode] = useState(false);
 
     // Filters
     const [residencyFilter, setResidencyFilter] = useState('All');
@@ -244,6 +251,35 @@ export default function AdminDashboard() {
 
     const logout = () => { localStorage.removeItem('adminToken'); router.push('/admin/login'); };
 
+    const toggleCheckIn = async (teamId: string, currentStatus: boolean | undefined) => {
+        try {
+            const token = localStorage.getItem('adminToken');
+            const newStatus = !currentStatus;
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+
+            setTeams(prev => prev.map(t => t._id === teamId ? { ...t, isCheckedIn: newStatus } : t));
+
+            const res = await fetch(`${API_URL}/api/admin/checkin/${teamId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status: newStatus }),
+            });
+
+            const data = await res.json();
+            if (!data.success) {
+                // Revert if failed
+                setTeams(prev => prev.map(t => t._id === teamId ? { ...t, isCheckedIn: !!currentStatus } : t));
+                alert(data.message || 'Failed to update check-in status');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error updating check-in status');
+        }
+    };
+
     const selectStyle: React.CSSProperties = {
         width: '100%', padding: '10px 12px', background: '#1e1610',
         border: '1px solid rgba(207,157,123,0.2)', borderRadius: '8px',
@@ -353,6 +389,30 @@ export default function AdminDashboard() {
                         </p>
                     </div>
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
+                        {/* Registration Mode Toggle */}
+                        <label style={{
+                            display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer',
+                            background: isRegistrationMode ? 'rgba(232, 98, 26, 0.2)' : 'rgba(255,255,255,0.05)',
+                            padding: '8px 16px', borderRadius: '10px',
+                            border: `1px solid ${isRegistrationMode ? '#E8621A' : 'rgba(255,255,255,0.1)'}`,
+                            transition: 'all 0.3s ease'
+                        }}>
+                            <div style={{
+                                width: '36px', height: '20px', background: isRegistrationMode ? '#E8621A' : '#444',
+                                borderRadius: '20px', position: 'relative', transition: 'background 0.3s'
+                            }}>
+                                <div style={{
+                                    width: '16px', height: '16px', background: '#fff', borderRadius: '50%',
+                                    position: 'absolute', top: '2px', left: isRegistrationMode ? '18px' : '2px',
+                                    transition: 'left 0.3s'
+                                }} />
+                            </div>
+                            <span style={{ fontSize: '13px', fontWeight: 700, color: isRegistrationMode ? '#E8621A' : '#a0a0a0' }}>
+                                Registration Mode
+                            </span>
+                            <input type="checkbox" checked={isRegistrationMode} onChange={() => setIsRegistrationMode(!isRegistrationMode)} style={{ display: 'none' }} />
+                        </label>
+
                         {/* CSV Dropdown */}
                         <div ref={csvDropdownRef} style={{ position: 'relative' }}>
                             <button onClick={() => setCsvDropdownOpen(prev => !prev)} style={{
@@ -419,6 +479,7 @@ export default function AdminDashboard() {
                 {/* Stats Bar */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(100px, 100%), 1fr))', gap: 'clamp(8px, 1.5vw, 12px)', marginBottom: 'clamp(16px, 3vw, 24px)' }}>
                     <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#CF9D7B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="7" height="7" rx="1" /><rect x="14" y="3" width="7" height="7" rx="1" /><rect x="3" y="14" width="7" height="7" rx="1" /><rect x="14" y="14" width="7" height="7" rx="1" /></svg>} value={stats.totalTeams} label="Total Teams" color="#CF9D7B" />
+                    <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8621A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" /><polyline points="22 4 12 14.01 9 11.01" /></svg>} value={allPeople.filter(p => p.isCheckedIn && p.role === 'Leader').length} label="Checked In" color="#E8621A" />
                     <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8C39E" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>} value={stats.totalPeople} label="Total People" color="#E8C39E" />
                     <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2b6ace" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>} value={stats.dayScholars} label="Day Scholars" color="#2b6aceff" />
                     <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" /><path d="M12 18h.01" /><path d="M8 6h8" /><path d="M8 10h8" /><path d="M8 14h4" /></svg>} value={stats.hostellers} label="Hostellers" color="#8b5cf6" />
@@ -520,10 +581,19 @@ export default function AdminDashboard() {
                                                 marginBottom: expandedTeams.has(team._id) ? '20px' : '0',
                                             }}>
                                                 <div style={{ flex: 1 }}>
-                                                    <h3 style={{
-                                                        fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(15px, 2.5vw, 18px)',
-                                                        fontWeight: 700, color: '#CF9D7B', margin: '0 0 6px 0',
-                                                    }}>{team.teamName}</h3>
+                                                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                                        <h3 style={{
+                                                            fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(15px, 2.5vw, 18px)',
+                                                            fontWeight: 700, color: team.isCheckedIn ? '#10B981' : '#CF9D7B', margin: '0 0 6px 0',
+                                                        }}>{team.teamName}</h3>
+                                                        {team.isCheckedIn && (
+                                                            <span style={{
+                                                                background: 'rgba(16,185,129,0.2)', color: '#10B981',
+                                                                fontSize: '10px', padding: '2px 6px', borderRadius: '4px',
+                                                                fontWeight: 700, border: '1px solid rgba(16,185,129,0.3)'
+                                                            }}>CHECKED IN</span>
+                                                        )}
+                                                    </div>
                                                     <p style={{ color: '#a0a0a0', fontSize: 'clamp(11px, 1.5vw, 13px)', margin: '0 0 3px 0', wordBreak: 'break-word' }}>
                                                         Leader: {team.leaderName} • {team.leaderEmail}
                                                     </p>
@@ -531,11 +601,28 @@ export default function AdminDashboard() {
                                                         Registered: {new Date(team.createdAt).toLocaleDateString()} {new Date(team.createdAt).toLocaleTimeString()}
                                                     </p>
                                                 </div>
-                                                <div style={{
-                                                    transform: expandedTeams.has(team._id) ? 'rotate(180deg)' : 'rotate(0deg)',
-                                                    transition: 'transform 0.3s ease', fontSize: '18px', color: '#CF9D7B',
-                                                    flexShrink: 0, marginLeft: '12px', marginTop: '4px',
-                                                }}>▼</div>
+
+                                                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                                                    {isRegistrationMode && (
+                                                        <button
+                                                            onClick={(e) => { e.stopPropagation(); toggleCheckIn(team._id, team.isCheckedIn); }}
+                                                            style={{
+                                                                padding: '6px 12px', borderRadius: '8px', fontSize: '12px', fontWeight: 700, cursor: 'pointer',
+                                                                background: team.isCheckedIn ? 'rgba(16, 185, 129, 0.2)' : 'rgba(232, 98, 26, 0.2)',
+                                                                border: `1px solid ${team.isCheckedIn ? 'rgba(16, 185, 129, 0.4)' : 'rgba(232, 98, 26, 0.4)'}`,
+                                                                color: team.isCheckedIn ? '#10B981' : '#E8621A',
+                                                                transition: 'all 0.3s ease'
+                                                            }}
+                                                        >
+                                                            {team.isCheckedIn ? '✅ Checked In' : 'Click to Check In'}
+                                                        </button>
+                                                    )}
+                                                    <div style={{
+                                                        transform: expandedTeams.has(team._id) ? 'rotate(180deg)' : 'rotate(0deg)',
+                                                        transition: 'transform 0.3s ease', fontSize: '18px', color: '#CF9D7B',
+                                                        flexShrink: 0, marginTop: '4px',
+                                                    }}>▼</div>
+                                                </div>
                                             </div>
 
                                             {/* Expanded Details */}
