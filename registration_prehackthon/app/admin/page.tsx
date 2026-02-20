@@ -176,10 +176,10 @@ export default function AdminDashboard() {
         return Array.from(batches).sort();
     }, [allPeople]);
 
-    const hasActiveFilters = residencyFilter !== 'All' || messFoodFilter !== 'All' || batchFilter !== 'All' || courseFilter !== 'All' || searchQuery.trim() !== '';
 
     // Filtered people (for filtered view)
     const filteredPeople = useMemo(() => {
+        if (isRegistrationMode) return []; // Don't filter people in reg mode
         let result = [...allPeople];
         if (residencyFilter !== 'All') result = result.filter(p => p.residency === residencyFilter);
         if (messFoodFilter !== 'All') result = result.filter(p => messFoodFilter === 'Yes' ? p.messFood : !p.messFood);
@@ -193,7 +193,30 @@ export default function AdminDashboard() {
             );
         }
         return result;
-    }, [allPeople, residencyFilter, messFoodFilter, batchFilter, courseFilter, searchQuery]);
+    }, [allPeople, residencyFilter, messFoodFilter, batchFilter, courseFilter, searchQuery, isRegistrationMode]);
+
+    // Filtered Teams (for Registration Mode search)
+    const filteredTeams = useMemo(() => {
+        let result = [...teams];
+        if (searchQuery.trim()) {
+            const q = searchQuery.toLowerCase().trim();
+            result = result.filter(t =>
+                t.teamName.toLowerCase().includes(q) ||
+                t.leaderName.toLowerCase().includes(q) ||
+                t.leaderEmail.toLowerCase().includes(q) ||
+                t.leaderRollNumber.toLowerCase().includes(q) ||
+                t.members.some(m =>
+                    m.name.toLowerCase().includes(q) ||
+                    m.email.toLowerCase().includes(q) ||
+                    m.rollNumber.toLowerCase().includes(q)
+                )
+            );
+        }
+        // Apply other filters to teams if needed (optional for now based on request)
+        return result;
+    }, [teams, searchQuery]);
+
+    const hasActiveFilters = !isRegistrationMode && (residencyFilter !== 'All' || messFoodFilter !== 'All' || batchFilter !== 'All' || courseFilter !== 'All' || searchQuery.trim() !== '');
 
     const clearFilters = () => {
         setResidencyFilter('All'); setMessFoodFilter('All');
@@ -275,8 +298,8 @@ export default function AdminDashboard() {
                 alert(data.message || 'Failed to update check-in status');
             }
         } catch (error) {
-            console.error(error);
-            alert('Error updating check-in status');
+            console.error("Check-in Error Details:", error);
+            alert('Error updating check-in status. Check console for details.');
         }
     };
 
@@ -563,16 +586,18 @@ export default function AdminDashboard() {
                 {/* ═══ CONTENT AREA ═══ */}
                 {!isLoading && !error && (
                     <>
-                        {/* ─── DEFAULT VIEW: Team-based expandable list ─── */}
-                        {!hasActiveFilters && (
+                        {/* ─── TEAM VIEW (Default or Registration Mode Search) ─── */}
+                        {(!hasActiveFilters) && (
                             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                                {teams.length === 0 ? (
+                                {(isRegistrationMode ? filteredTeams : teams).length === 0 ? (
                                     <div style={{ ...cardBg, padding: '40px', textAlign: 'center' }}>
                                         <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
-                                        <p style={{ color: '#a0a0a0', fontSize: '16px', margin: 0 }}>No registrations yet</p>
+                                        <p style={{ color: '#a0a0a0', fontSize: '16px', margin: 0 }}>
+                                            {searchQuery ? 'No teams found matching your search' : 'No registrations yet'}
+                                        </p>
                                     </div>
                                 ) : (
-                                    teams.map((team) => (
+                                    (isRegistrationMode ? filteredTeams : teams).map((team) => (
                                         <div key={team._id} style={{ ...cardBg, padding: 'clamp(14px, 2.5vw, 22px)', transition: 'all 0.3s ease' }}>
                                             {/* Team Header (clickable) */}
                                             <div onClick={() => toggleTeam(team._id)} style={{
