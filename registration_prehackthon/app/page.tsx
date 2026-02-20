@@ -6,6 +6,7 @@ import dynamic from 'next/dynamic';
 
 const Scene3D = dynamic(() => import('./components/Scene3D'), { ssr: false });
 import Loader from './components/Loader';
+import ProblemStatements from './components/ProblemStatements';
 
 // ═══ TOGGLE THIS TO LOCK/UNLOCK REGISTRATION ═══
 const REGISTRATION_LOCKED = true;
@@ -1081,6 +1082,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ═══════════════ PROBLEM STATEMENTS SECTION ═══════════════ */}
+      <ProblemStatements />
 
       {/* ═══════════════ FORM SECTION ═══════════════ */}
       <div id="register" style={{ position: 'relative', zIndex: 3, scrollMarginTop: '60px' }}>
