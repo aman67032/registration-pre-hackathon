@@ -348,11 +348,14 @@ export default function AdminDashboard() {
                 )
             );
         }
-        // Apply other filters to teams if needed (optional for now based on request)
+        // Apply room filter to teams
+        if (roomFilter !== 'All') {
+            result = result.filter(t => t.roomNumber === roomFilter);
+        }
         return result;
-    }, [teams, searchQuery]);
+    }, [teams, searchQuery, roomFilter]);
 
-    const hasActiveFilters = !isRegistrationMode && (residencyFilter !== 'All' || messFoodFilter !== 'All' || batchFilter !== 'All' || courseFilter !== 'All' || roomFilter !== 'All' || searchQuery.trim() !== '');
+    const hasActiveFilters = !isRegistrationMode && (residencyFilter !== 'All' || messFoodFilter !== 'All' || batchFilter !== 'All' || courseFilter !== 'All' || searchQuery.trim() !== '');
 
     const clearFilters = () => {
         setResidencyFilter('All'); setMessFoodFilter('All');
@@ -870,15 +873,15 @@ export default function AdminDashboard() {
                                 {/* ─── TEAM VIEW (Default or Registration Mode Search) ─── */}
                                 {(!hasActiveFilters) && (
                                     <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-                                        {(isRegistrationMode ? filteredTeams : teams).length === 0 ? (
+                                        {(isRegistrationMode ? filteredTeams : (roomFilter !== 'All' ? teams.filter(t => t.roomNumber === roomFilter) : teams)).length === 0 ? (
                                             <div style={{ ...cardBg, padding: '40px', textAlign: 'center' }}>
                                                 <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔍</div>
                                                 <p style={{ color: '#a0a0a0', fontSize: '16px', margin: 0 }}>
-                                                    {searchQuery ? 'No teams found matching your search' : 'No registrations yet'}
+                                                    {searchQuery ? 'No teams found matching your search' : roomFilter !== 'All' ? `No teams in room ${roomFilter}` : 'No registrations yet'}
                                                 </p>
                                             </div>
                                         ) : (
-                                            (isRegistrationMode ? filteredTeams : teams).map((team) => (
+                                            (isRegistrationMode ? filteredTeams : (roomFilter !== 'All' ? teams.filter(t => t.roomNumber === roomFilter) : teams)).map((team) => (
                                                 <div key={team._id} style={{ ...cardBg, padding: 'clamp(14px, 2.5vw, 22px)', transition: 'all 0.3s ease' }}>
                                                     {/* Team Header (clickable) */}
                                                     <div onClick={() => toggleTeam(team._id)} style={{
