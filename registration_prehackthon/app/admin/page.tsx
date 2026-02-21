@@ -51,6 +51,7 @@ interface Person {
     teamId: string;
     isCheckedIn: boolean;
     extensionBoardGiven: boolean; // Added
+    roomNumber: string;
 }
 
 function flattenTeams(teams: Team[]): Person[] {
@@ -63,6 +64,7 @@ function flattenTeams(teams: Team[]): Person[] {
             batch: team.leaderBatch || '', role: 'Leader', teamName: team.teamName, teamId: team._id,
             isCheckedIn: team.isCheckedIn || false,
             extensionBoardGiven: team.extensionBoardGiven || false,
+            roomNumber: team.roomNumber || '',
         });
         for (const m of team.members) {
             people.push({
@@ -72,6 +74,7 @@ function flattenTeams(teams: Team[]): Person[] {
                 batch: m.batch || '', role: 'Member', teamName: team.teamName, teamId: team._id,
                 isCheckedIn: team.isCheckedIn || false,
                 extensionBoardGiven: team.extensionBoardGiven || false,
+                roomNumber: team.roomNumber || '',
             });
         }
     }
@@ -119,6 +122,7 @@ export default function AdminDashboard() {
     const [messFoodFilter, setMessFoodFilter] = useState('All');
     const [batchFilter, setBatchFilter] = useState('All');
     const [courseFilter, setCourseFilter] = useState('All');
+    const [roomFilter, setRoomFilter] = useState('All');
     const [searchQuery, setSearchQuery] = useState('');
 
     // Expanded teams (for default view)
@@ -301,6 +305,12 @@ export default function AdminDashboard() {
         return Array.from(batches).sort();
     }, [allPeople]);
 
+    const availableRooms = useMemo(() => {
+        const rooms = new Set<string>();
+        teams.forEach(t => { if (t.roomNumber) rooms.add(t.roomNumber); });
+        return Array.from(rooms).sort();
+    }, [teams]);
+
 
     // Filtered people (for filtered view)
     const filteredPeople = useMemo(() => {
@@ -310,6 +320,7 @@ export default function AdminDashboard() {
         if (messFoodFilter !== 'All') result = result.filter(p => messFoodFilter === 'Yes' ? p.messFood : !p.messFood);
         if (batchFilter !== 'All') result = result.filter(p => p.batch === batchFilter);
         if (courseFilter !== 'All') result = result.filter(p => p.course.toLowerCase() === courseFilter.toLowerCase());
+        if (roomFilter !== 'All') result = result.filter(p => p.roomNumber === roomFilter);
         if (searchQuery.trim()) {
             const q = searchQuery.toLowerCase().trim();
             result = result.filter(p =>
@@ -318,7 +329,7 @@ export default function AdminDashboard() {
             );
         }
         return result;
-    }, [allPeople, residencyFilter, messFoodFilter, batchFilter, courseFilter, searchQuery, isRegistrationMode]);
+    }, [allPeople, residencyFilter, messFoodFilter, batchFilter, courseFilter, roomFilter, searchQuery, isRegistrationMode]);
 
     // Filtered Teams (for Registration Mode search)
     const filteredTeams = useMemo(() => {
@@ -341,11 +352,11 @@ export default function AdminDashboard() {
         return result;
     }, [teams, searchQuery]);
 
-    const hasActiveFilters = !isRegistrationMode && (residencyFilter !== 'All' || messFoodFilter !== 'All' || batchFilter !== 'All' || courseFilter !== 'All' || searchQuery.trim() !== '');
+    const hasActiveFilters = !isRegistrationMode && (residencyFilter !== 'All' || messFoodFilter !== 'All' || batchFilter !== 'All' || courseFilter !== 'All' || roomFilter !== 'All' || searchQuery.trim() !== '');
 
     const clearFilters = () => {
         setResidencyFilter('All'); setMessFoodFilter('All');
-        setBatchFilter('All'); setCourseFilter('All'); setSearchQuery('');
+        setBatchFilter('All'); setCourseFilter('All'); setRoomFilter('All'); setSearchQuery('');
     };
 
     const toggleTeam = useCallback((teamId: string) => {
@@ -826,6 +837,13 @@ export default function AdminDashboard() {
                                     <label style={labelStyle}>Course</label>
                                     <select value={courseFilter} onChange={(e) => setCourseFilter(e.target.value)} style={selectStyle}>
                                         <option value="All" style={optionStyle}>All</option><option value="BTech" style={optionStyle}>BTech</option><option value="BBA" style={optionStyle}>BBA</option><option value="BDes" style={optionStyle}>BDes</option><option value="HSB" style={optionStyle}>HSB</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label style={labelStyle}>Room Number</label>
+                                    <select value={roomFilter} onChange={(e) => setRoomFilter(e.target.value)} style={selectStyle}>
+                                        <option value="All" style={optionStyle}>All</option>
+                                        {availableRooms.map(r => (<option key={r} value={r} style={optionStyle}>{r}</option>))}
                                     </select>
                                 </div>
                             </div>
