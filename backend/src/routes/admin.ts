@@ -477,6 +477,37 @@ router.post('/register', authMiddleware, async (req: AuthRequest, res: Response)
 });
 
 
+// ─── ASSIGN PROBLEM STATEMENT BY BOARD NUMBER ────────────────────────────────
+router.put('/assign-ps', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
+    try {
+        await connectDB();
+        const { boardNumber, problemStatement } = req.body;
+
+        if (!boardNumber || !problemStatement) {
+            res.status(400).json({ success: false, message: 'Board number and problem statement are required' });
+            return;
+        }
+
+        const team = await Team.findOne({ allocatedTeamId: boardNumber.trim() });
+        if (!team) {
+            res.status(404).json({ success: false, message: `No team found with board number "${boardNumber}"` });
+            return;
+        }
+
+        team.problemStatement = problemStatement.trim();
+        await team.save();
+
+        res.status(200).json({
+            success: true,
+            message: `Problem statement assigned to team "${team.teamName}" (${boardNumber})`,
+            team,
+        });
+    } catch (error: any) {
+        console.error('Assign PS error:', error);
+        res.status(500).json({ success: false, message: 'Server error assigning problem statement' });
+    }
+});
+
 // Swap Members Endpoint
 router.put('/swap-members', authMiddleware, async (req: AuthRequest, res: Response): Promise<void> => {
     try {
