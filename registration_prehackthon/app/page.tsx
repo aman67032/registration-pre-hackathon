@@ -538,78 +538,66 @@ export default function Home() {
             background: 'linear-gradient(135deg, #CF9D7B 0%, #E8C39E 50%, #724B39 100%)',
             backgroundClip: 'text', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
           }}>Top 10 Teams</h2>
-          <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>🏆 The best performers of the Pre-Hackathon</p>
+          <p style={{ color: '#a0a0a0', fontSize: '13px', margin: 0 }}>🏆 2 winners will be selected from these top teams</p>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
-            { rank: 1, id: 'T-1', name: 'Runtime T.EEROR', leader: 'Shourya Bansal', ps: 'Indian Sign Language Recognition' },
-            { rank: 2, id: 'T-2', name: 'Overclocked', leader: 'Kartik Gupta', ps: 'Deepfake Detection Tool' },
-            { rank: 3, id: 'T-4', name: 'Wi-Wi Club', leader: 'Siddharth Ranka', ps: 'AI Tool to Detect Online Exam Cheating' },
-            { rank: 4, id: 'T-11', name: 'team', leader: 'Aayan Gohar', ps: 'Local Language Learning Platform' },
-            { rank: 5, id: 'T-36', name: 'NYXCODERS', leader: 'Mehul Maheshwari', ps: 'Indian Sign Language Recognition' },
-            { rank: 6, id: 'T-12', name: 'XLNC', leader: 'Vaibhav Sharma', ps: "Women's Safety Alert Web App" },
-            { rank: 7, id: 'T-5', name: 'Team RedApple', leader: 'Devansh Pundir', ps: 'Decentralized Marketplace for Farmers (Blockchain)' },
-            { rank: 8, id: 'T-58', name: 'Knight Vision', leader: 'Labish Bardiya', ps: 'AI Healthcare Triage Assistant' },
-            { rank: 9, id: 'T-55', name: 'Team Paradise', leader: 'Budige Gurusaidath', ps: 'Rural Marketplace Connecting Farmers to Buyers' },
-            { rank: 10, id: 'T-59', name: 'spark x', leader: 'harshit patidar', ps: 'AI Healthcare Triage Assistant' },
-          ].map((team) => {
-            const medals = ['🥇', '🥈', '🥉'];
-            const isTop3 = team.rank <= 3;
-            const borderColor = team.rank === 1 ? 'rgba(255, 215, 0, 0.4)' : team.rank === 2 ? 'rgba(192, 192, 192, 0.4)' : team.rank === 3 ? 'rgba(205, 127, 50, 0.4)' : 'rgba(207,157,123,0.15)';
-            const glowColor = team.rank === 1 ? 'rgba(255, 215, 0, 0.08)' : team.rank === 2 ? 'rgba(192, 192, 192, 0.06)' : team.rank === 3 ? 'rgba(205, 127, 50, 0.06)' : 'rgba(207,157,123,0.03)';
+            { id: 'T-1', name: 'Runtime T.EEROR', leader: 'Shourya Bansal', ps: 'Indian Sign Language Recognition' },
+            { id: 'T-2', name: 'Overclocked', leader: 'Kartik Gupta', ps: 'Deepfake Detection Tool' },
+            { id: 'T-4', name: 'Wi-Wi Club', leader: 'Siddharth Ranka', ps: 'AI Tool to Detect Online Exam Cheating' },
+            { id: 'T-11', name: 'team', leader: 'Aayan Gohar', ps: 'Local Language Learning Platform' },
+            { id: 'T-36', name: 'NYXCODERS', leader: 'Mehul Maheshwari', ps: 'Indian Sign Language Recognition' },
+            { id: 'T-12', name: 'XLNC', leader: 'Vaibhav Sharma', ps: "Women's Safety Alert Web App" },
+            { id: 'T-5', name: 'Team RedApple', leader: 'Devansh Pundir', ps: 'Decentralized Marketplace for Farmers (Blockchain)' },
+            { id: 'T-58', name: 'Knight Vision', leader: 'Labish Bardiya', ps: 'AI Healthcare Triage Assistant' },
+            { id: 'T-55', name: 'Team Paradise', leader: 'Budige Gurusaidath', ps: 'Rural Marketplace Connecting Farmers to Buyers' },
+            { id: 'T-59', name: 'spark x', leader: 'harshit patidar', ps: 'AI Healthcare Triage Assistant' },
+          ].map((team) => (
+            <div key={team.id} style={{
+              background: 'linear-gradient(135deg, rgba(30,22,17,0.9), rgba(207,157,123,0.03))',
+              backdropFilter: 'blur(20px)',
+              border: '1px solid rgba(207,157,123,0.15)',
+              borderRadius: '16px',
+              padding: 'clamp(14px, 3vw, 20px) clamp(16px, 3vw, 24px)',
+              display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 20px)',
+              transition: 'all 0.3s ease',
+            }}
+              onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.borderColor = '#CF9D7B'; }}
+              onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = 'rgba(207,157,123,0.15)'; }}
+            >
+              {/* Star Icon */}
+              <div style={{
+                fontSize: '24px',
+                minWidth: '40px', textAlign: 'center',
+                flexShrink: 0,
+              }}>⭐</div>
 
-            return (
-              <div key={team.id} style={{
-                background: `linear-gradient(135deg, rgba(30,22,17,0.9), ${glowColor})`,
-                backdropFilter: 'blur(20px)',
-                border: `1px solid ${borderColor}`,
-                borderRadius: '16px',
-                padding: 'clamp(14px, 3vw, 20px) clamp(16px, 3vw, 24px)',
-                display: 'flex', alignItems: 'center', gap: 'clamp(12px, 3vw, 20px)',
-                transition: 'all 0.3s ease',
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = 'translateX(4px)'; e.currentTarget.style.borderColor = '#CF9D7B'; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = 'translateX(0)'; e.currentTarget.style.borderColor = borderColor; }}
-              >
-                {/* Rank */}
-                <div style={{
-                  fontSize: isTop3 ? '28px' : '18px',
-                  fontWeight: 800,
-                  color: isTop3 ? undefined : '#CF9D7B',
-                  fontFamily: 'var(--font-orbitron)',
-                  minWidth: '40px', textAlign: 'center',
-                  flexShrink: 0,
-                }}>
-                  {isTop3 ? medals[team.rank - 1] : `#${team.rank}`}
+              {/* Team Info */}
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
+                  <span style={{
+                    fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(13px, 2vw, 16px)',
+                    fontWeight: 700, color: '#e0e0e0',
+                  }}>{team.name}</span>
+                  <span style={{
+                    fontSize: '10px', padding: '2px 8px', borderRadius: '6px',
+                    background: 'rgba(207,157,123,0.15)', color: '#CF9D7B',
+                    fontWeight: 700, border: '1px solid rgba(207,157,123,0.25)', flexShrink: 0,
+                  }}>{team.id}</span>
                 </div>
-
-                {/* Team Info */}
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', marginBottom: '4px' }}>
-                    <span style={{
-                      fontFamily: 'var(--font-orbitron)', fontSize: 'clamp(13px, 2vw, 16px)',
-                      fontWeight: 700, color: '#e0e0e0',
-                    }}>{team.name}</span>
-                    <span style={{
-                      fontSize: '10px', padding: '2px 8px', borderRadius: '6px',
-                      background: 'rgba(207,157,123,0.15)', color: '#CF9D7B',
-                      fontWeight: 700, border: '1px solid rgba(207,157,123,0.25)', flexShrink: 0,
-                    }}>{team.id}</span>
-                  </div>
-                  <div style={{ fontSize: '12px', color: '#9c8578' }}>
-                    <span>Leader: <span style={{ color: '#c0c0c0' }}>{team.leader}</span></span>
-                  </div>
-                  <div style={{
-                    fontSize: '12px', color: '#a0a0a0', marginTop: '4px',
-                    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
-                  }}>
-                    📋 {team.ps}
-                  </div>
+                <div style={{ fontSize: '12px', color: '#9c8578' }}>
+                  <span>Leader: <span style={{ color: '#c0c0c0' }}>{team.leader}</span></span>
+                </div>
+                <div style={{
+                  fontSize: '12px', color: '#a0a0a0', marginTop: '4px',
+                  overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+                }}>
+                  📋 {team.ps}
                 </div>
               </div>
-            );
-          })}
+            </div>
+          ))}
         </div>
       </section>
 
