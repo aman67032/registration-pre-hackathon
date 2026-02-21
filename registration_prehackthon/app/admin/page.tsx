@@ -79,12 +79,13 @@ function flattenTeams(teams: Team[]): Person[] {
 }
 
 // Stat Card
-function StatCard({ icon, value, label, color }: { icon: React.ReactNode; value: string | number; label: string; color: string }) {
+function StatCard({ icon, value, label, color, onClick }: { icon: React.ReactNode; value: string | number; label: string; color: string; onClick?: () => void }) {
     return (
-        <div style={{
+        <div onClick={onClick} style={{
             background: 'rgba(30, 22, 17, 0.85)', backdropFilter: 'blur(20px)',
             border: '1px solid rgba(207,157,123,0.15)', borderRadius: '14px',
             padding: 'clamp(12px, 2vw, 18px) clamp(10px, 1.5vw, 16px)', textAlign: 'center', position: 'relative', overflow: 'hidden',
+            cursor: onClick ? 'pointer' : 'default', transition: 'all 0.2s ease',
         }}>
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: color }} />
             <div style={{ marginBottom: '6px', display: 'flex', justifyContent: 'center' }}>{icon}</div>
@@ -95,7 +96,7 @@ function StatCard({ icon, value, label, color }: { icon: React.ReactNode; value:
             <div style={{
                 fontSize: 'clamp(8px, 1.2vw, 10px)', color: '#a0a0a0', fontWeight: 600,
                 textTransform: 'uppercase', letterSpacing: '0.6px', marginTop: '4px', lineHeight: 1.3,
-            }}>{label}</div>
+            }}>{label}{onClick && ' ▾'}</div>
         </div>
     );
 }
@@ -126,6 +127,9 @@ export default function AdminDashboard() {
     // CSV dropdown
     const [csvDropdownOpen, setCsvDropdownOpen] = useState(false);
     const csvDropdownRef = useRef<HTMLDivElement>(null);
+
+    // Boards Given list toggle
+    const [showBoardsList, setShowBoardsList] = useState(false);
 
     useEffect(() => {
         const handleClickOutside = (e: MouseEvent) => {
@@ -732,8 +736,44 @@ export default function AdminDashboard() {
                             <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /></svg>} value={stats.batch2024} label="Batch 2024" color="#10b981" />
                             <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>} value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
                             <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M9 16l2 2 4-4" /></svg>} value={stats.batchOther} label="Batch 2023" color="#ec4899" />
-                            <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6" /><path d="M5 10h14" /><rect x="7" y="10" width="10" height="8" rx="1" /><path d="M9 18v4" /><path d="M15 18v4" /></svg>} value={stats.boardsGiven} label="Boards Given" color="#14b8a6" />
+                            <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6" /><path d="M5 10h14" /><rect x="7" y="10" width="10" height="8" rx="1" /><path d="M9 18v4" /><path d="M15 18v4" /></svg>} value={stats.boardsGiven} label="Boards Given" color="#14b8a6" onClick={() => setShowBoardsList(prev => !prev)} />
                         </div>
+
+                        {/* Boards Given List */}
+                        {showBoardsList && (
+                            <div style={{ ...cardBg, padding: 'clamp(14px, 2vw, 22px)', marginBottom: '24px' }}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '14px' }}>
+                                    <h3 style={{ fontFamily: 'var(--font-orbitron)', fontSize: '14px', fontWeight: 700, color: '#14b8a6', margin: 0 }}>
+                                        🔌 Extension Boards Given ({teams.filter(t => t.extensionBoardGiven).length})
+                                    </h3>
+                                    <button onClick={() => setShowBoardsList(false)} style={{
+                                        padding: '4px 10px', background: 'rgba(255,255,255,0.05)',
+                                        border: '1px solid rgba(207,157,123,0.2)', borderRadius: '6px',
+                                        color: '#a0a0a0', fontSize: '11px', fontWeight: 700, cursor: 'pointer',
+                                    }}>✕ Close</button>
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 280px), 1fr))', gap: '10px', maxHeight: '400px', overflow: 'auto' }}>
+                                    {teams.filter(t => t.extensionBoardGiven).map(t => (
+                                        <div key={t._id} style={{
+                                            padding: '12px 16px', background: 'rgba(20, 184, 166, 0.05)',
+                                            border: '1px solid rgba(20, 184, 166, 0.15)', borderRadius: '10px',
+                                        }}>
+                                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+                                                <span style={{ color: '#e0e0e0', fontWeight: 700, fontSize: '14px' }}>{t.teamName}</span>
+                                                {t.allocatedTeamId && <span style={{ color: '#14b8a6', fontSize: '11px', fontWeight: 700, background: 'rgba(20,184,166,0.15)', padding: '2px 6px', borderRadius: '4px' }}>{t.allocatedTeamId}</span>}
+                                            </div>
+                                            <div style={{ fontSize: '12px', color: '#a0a0a0' }}>
+                                                <span>Leader: {t.leaderName}</span>
+                                                {t.roomNumber && <span style={{ marginLeft: '10px' }}>Room: <span style={{ color: '#CF9D7B' }}>{t.roomNumber}</span></span>}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {teams.filter(t => t.extensionBoardGiven).length === 0 && (
+                                        <p style={{ color: '#666', fontSize: '14px', margin: '10px 0' }}>No extension boards have been given yet.</p>
+                                    )}
+                                </div>
+                            </div>
+                        )}
 
                         {/* Filters */}
                         <div style={{ ...cardBg, padding: 'clamp(14px, 2vw, 22px)', marginBottom: '24px' }}>
