@@ -32,6 +32,7 @@ interface Team {
     extensionBoardGiven: boolean; // Added for extension board
     roomNumber?: string;
     allocatedTeamId?: string;
+    problemStatement?: string;
     members: Member[];
     createdAt: string;
 }
@@ -110,7 +111,7 @@ export default function AdminDashboard() {
     const [isRegistrationMode, setIsRegistrationMode] = useState(false);
 
     // View State
-    const [activeView, setActiveView] = useState<'dashboard' | 'on-spot' | 'swap'>('dashboard');
+    const [activeView, setActiveView] = useState<'dashboard' | 'on-spot' | 'swap' | 'assign-ps'>('dashboard');
 
     // Filters
     const [residencyFilter, setResidencyFilter] = useState('All');
@@ -155,6 +156,11 @@ export default function AdminDashboard() {
         team1Id: '', member1Email: '',
         team2Id: '', member2Email: ''
     });
+
+    // Assign Problem Statement State
+    const [psData, setPsData] = useState({ boardNumber: '', problemStatement: '' });
+    const [psMessage, setPsMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+    const [isSubmittingPS, setIsSubmittingPS] = useState(false);
 
     // Check-in Modal State
     const [checkInModal, setCheckInModal] = useState<{ teamId: string; teamName: string } | null>(null);
@@ -210,6 +216,34 @@ export default function AdminDashboard() {
         } catch (err) {
             console.error(err);
             alert('Error swapping members');
+        }
+    };
+
+    const handleAssignPS = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setPsMessage(null);
+        setIsSubmittingPS(true);
+        try {
+            const token = localStorage.getItem('adminToken');
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+            const res = await fetch(`${API_URL}/api/admin/assign-ps`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify(psData),
+            });
+            const data = await res.json();
+            if (data.success) {
+                setPsMessage({ text: data.message, type: 'success' });
+                setPsData({ boardNumber: '', problemStatement: '' });
+                fetchRegistrations();
+            } else {
+                setPsMessage({ text: data.message || 'Failed to assign', type: 'error' });
+            }
+        } catch (err) {
+            console.error(err);
+            setPsMessage({ text: 'Error connecting to server', type: 'error' });
+        } finally {
+            setIsSubmittingPS(false);
         }
     };
 
@@ -582,14 +616,14 @@ export default function AdminDashboard() {
                     <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' }}>
                         {/* View Tabs */}
                         <div style={{ display: 'flex', gap: '4px', background: 'rgba(255,255,255,0.05)', padding: '4px', borderRadius: '10px' }}>
-                            {['dashboard', 'on-spot', 'swap'].map(view => (
+                            {['dashboard', 'on-spot', 'swap', 'assign-ps'].map(view => (
                                 <button key={view} onClick={() => setActiveView(view as any)} style={{
                                     padding: '6px 14px', borderRadius: '8px', border: 'none', cursor: 'pointer',
                                     background: activeView === view ? '#CF9D7B' : 'transparent',
                                     color: activeView === view ? '#121519' : '#a0a0a0',
                                     fontWeight: 700, fontSize: '12px', textTransform: 'capitalize', transition: 'all 0.2s'
                                 }}>
-                                    {view.replace('-', ' ')}
+                                    {view === 'assign-ps' ? 'Assign PS' : view.replace('-', ' ')}
                                 </button>
                             ))}
                         </div>
@@ -1078,6 +1112,75 @@ export default function AdminDashboard() {
                                 Swap Members
                             </button>
                         </form>
+                    </div>
+                )}
+
+                {/* ─── ASSIGN PROBLEM STATEMENT VIEW ─── */}
+                {activeView === 'assign-ps' && (
+                    <div style={{ ...cardBg, padding: 'clamp(20px, 4vw, 40px)' }}>
+                        <h2 style={{ color: '#CF9D7B', marginBottom: '8px', fontFamily: 'var(--font-orbitron)' }}>Assign Problem Statement</h2>
+                        <p style={{ color: '#a0a0a0', fontSize: '14px', marginBottom: '24px' }}>Enter the board number (e.g. T-10) and the problem statement to assign.</p>
+
+                        {psMessage && (
+                            <div style={{
+                                padding: '12px 16px', borderRadius: '10px', marginBottom: '20px',
+                                background: psMessage.type === 'success' ? 'rgba(16,185,129,0.1)' : 'rgba(220,38,38,0.1)',
+                                border: `1px solid ${psMessage.type === 'success' ? 'rgba(16,185,129,0.3)' : 'rgba(220,38,38,0.3)'}`,
+                                color: psMessage.type === 'success' ? '#10b981' : '#f87171',
+                                fontSize: '14px', fontWeight: 600,
+                            }}>
+                                {psMessage.type === 'success' ? '✅' : '⚠'} {psMessage.text}
+                            </div>
+                        )}
+
+                        <form onSubmit={handleAssignPS} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                            <div>
+                                <label style={labelStyle}>Board Number (Allocated Team ID)</label>
+                                <input type="text" required value={psData.boardNumber}
+                                    onChange={e => setPsData({ ...psData, boardNumber: e.target.value })}
+                                    placeholder="e.g. T-10" style={inputStyle} />
+                            </div>
+                            <div>
+                                <label style={labelStyle}>Problem Statement</label>
+                                <textarea required value={psData.problemStatement}
+                                    onChange={e => setPsData({ ...psData, problemStatement: e.target.value })}
+                                    placeholder="Enter the problem statement..."
+                                    rows={4}
+                                    style={{ ...inputStyle, resize: 'vertical', minHeight: '80px' }} />
+                            </div>
+                            <button type="submit" disabled={isSubmittingPS || !psData.boardNumber.trim() || !psData.problemStatement.trim()}
+                                style={{
+                                    ...buttonStyle, background: '#CF9D7B', color: '#121519',
+                                    opacity: (isSubmittingPS || !psData.boardNumber.trim() || !psData.problemStatement.trim()) ? 0.5 : 1,
+                                }}>
+                                {isSubmittingPS ? 'Assigning...' : '📝 Assign Problem Statement'}
+                            </button>
+                        </form>
+
+                        {/* Quick reference: teams with board numbers */}
+                        <div style={{ marginTop: '30px', borderTop: '1px solid rgba(207,157,123,0.15)', paddingTop: '20px' }}>
+                            <h3 style={{ color: '#a0a0a0', fontSize: '13px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '12px' }}>Teams with Board Numbers</h3>
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 250px), 1fr))', gap: '8px', maxHeight: '300px', overflow: 'auto' }}>
+                                {teams.filter(t => t.allocatedTeamId).sort((a, b) => (a.allocatedTeamId || '').localeCompare(b.allocatedTeamId || '')).map(t => (
+                                    <div key={t._id} style={{
+                                        padding: '10px 14px', background: 'rgba(255,255,255,0.03)',
+                                        border: '1px solid rgba(207,157,123,0.1)', borderRadius: '8px',
+                                        display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px',
+                                        cursor: 'pointer',
+                                    }} onClick={() => setPsData({ ...psData, boardNumber: t.allocatedTeamId || '' })}>
+                                        <div>
+                                            <span style={{ color: '#CF9D7B', fontWeight: 700, fontSize: '14px' }}>{t.allocatedTeamId}</span>
+                                            <span style={{ color: '#a0a0a0', fontSize: '12px', marginLeft: '8px' }}>{t.teamName}</span>
+                                        </div>
+                                        {t.problemStatement ? (
+                                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(16,185,129,0.15)', color: '#10b981', fontWeight: 700 }}>HAS PS</span>
+                                        ) : (
+                                            <span style={{ fontSize: '10px', padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', color: '#666', fontWeight: 700 }}>NO PS</span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
                 )}
 
