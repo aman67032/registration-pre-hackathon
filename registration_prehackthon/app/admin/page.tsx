@@ -287,6 +287,7 @@ export default function AdminDashboard() {
             batch2024: allPeople.filter(p => p.batch.includes('2024')).length,
             batch2025: allPeople.filter(p => p.batch.includes('2025')).length,
             batchOther: totalPeople - allPeople.filter(p => p.batch.includes('2024')).length - allPeople.filter(p => p.batch.includes('2025')).length,
+            boardsGiven: teams.filter(t => t.extensionBoardGiven).length,
         };
     }, [allPeople, teams]);
 
@@ -731,6 +732,7 @@ export default function AdminDashboard() {
                             <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#10b981" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M8 14h.01" /><path d="M12 14h.01" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /></svg>} value={stats.batch2024} label="Batch 2024" color="#10b981" />
                             <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M16 14h.01" /><path d="M8 18h.01" /><path d="M12 18h.01" /><path d="M16 18h.01" /></svg>} value={stats.batch2025} label="Batch 2025" color="#06b6d4" />
                             <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ec4899" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /><path d="M9 16l2 2 4-4" /></svg>} value={stats.batchOther} label="Batch 2023" color="#ec4899" />
+                            <StatCard icon={<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#14b8a6" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v6" /><path d="M5 10h14" /><rect x="7" y="10" width="10" height="8" rx="1" /><path d="M9 18v4" /><path d="M15 18v4" /></svg>} value={stats.boardsGiven} label="Boards Given" color="#14b8a6" />
                         </div>
 
                         {/* Filters */}
