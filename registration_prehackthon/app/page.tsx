@@ -9,6 +9,7 @@ import Loader from './components/Loader';
 import ProblemStatements from './components/ProblemStatements';
 import Itinerary from './components/Itinerary';
 import TeamShowcase from './components/TeamShowcase';
+import Winners from './components/Winners';
 
 // ═══ TOGGLE THIS TO LOCK/UNLOCK REGISTRATION ═══
 const REGISTRATION_LOCKED = true;
@@ -520,6 +521,9 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* ═══════════════ WINNERS SECTION ═══════════════ */}
+      <Winners />
 
       {/* ═══════════════ TOP 10 TEAMS SECTION ═══════════════ */}
       <section style={{
